@@ -1,6 +1,7 @@
 // App.js
 // Kindacode.com
 import { useState } from "react";
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 
 const App = () => {
   const [selectedImage, setSelectedImage] = useState();
@@ -25,7 +26,17 @@ const App = () => {
           type="file"
           onChange={imageChange}
         />
-
+        {/* the upload with an icon but it has small problem in funcionality.. DON'T DELETE PLEASE */}
+        {/* <div>
+          <label htmlFor="myInput"><FileUploadOutlinedIcon style={{ color:'white', fontSize: '30px'}} /></label>
+          <input
+            id="myInput"
+            style={{display:'none'}}
+            accept="image/*"
+            type="file"
+            onChange={imageChange}
+          />
+        </div> */}
         {selectedImage && (
           <div style={styles.preview}>
             <img
@@ -33,9 +44,10 @@ const App = () => {
               style={styles.image}
               alt="Thumb"
             />
-            <button onClick={removeSelectedImage} style={styles.delete}>
+            {/* the remove button .. DON'T DELETE PLEASE */}
+            {/* <button onClick={removeSelectedImage} style={styles.delete}>
               Remove This Image
-            </button>
+            </button> */}
           </div>
         )}
       </div>
@@ -52,7 +64,7 @@ const styles = {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: 50,
+    paddingTop: 5,
   },
   preview: {
     marginTop: 50,
