@@ -1,27 +1,70 @@
-import { useState } from 'react';
-import './App.css'
+// App.js
+// Kindacode.com
+import { useState } from "react";
 
-const MAX_COUNT = 2;
-function App() {
-  const [uploadedFiles, setUploadedFiles] = useState([])
-  const [fileLimit, setFileLimit] = useState(false);
-  const handleFileEvent =  (e) => {
-   
-}
+const App = () => {
+  const [selectedImage, setSelectedImage] = useState();
+
+  // This function will be triggered when the file field change
+  const imageChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedImage(e.target.files[0]);
+    }
+  };
+
+  // This function will be triggered when the "Remove This Image" button is clicked
+  const removeSelectedImage = () => {
+    setSelectedImage();
+  };
+
   return (
-    <div className="App">
-      <input id='fileUpload' type='file' multiple
-        accept='image/png'
-        onChange={handleFileEvent}
-        disabled={fileLimit}/> 
-        {/* a label with the attribute htmlFor set to the id of the input. With this, 
-        the label is bound to the input and is able to replicate its functionality. */}
-        <label htmlFor='fileUpload'>
-        {/* using a instead of button and applied bootstrap classes to it. */}
-				<a  className={`btn btn-primary ${!fileLimit ? '' : 'disabled' } `}>Upload Files</a>
-			</label>
-    </div>
+    <>
+      <div style={styles.container}>
+        <input
+          accept="image/*"
+          type="file"
+          onChange={imageChange}
+        />
+
+        {selectedImage && (
+          <div style={styles.preview}>
+            <img
+              src={URL.createObjectURL(selectedImage)}
+              style={styles.image}
+              alt="Thumb"
+            />
+            <button onClick={removeSelectedImage} style={styles.delete}>
+              Remove This Image
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
-}
+};
 
 export default App;
+
+// Just some styles
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 50,
+  },
+  preview: {
+    marginTop: 50,
+    display: "flex",
+    flexDirection: "column",
+  },
+  image: { maxWidth: "100%", maxHeight: 320 },
+  delete: {
+    cursor: "pointer",
+    padding: 15,
+    background: "red",
+    color: "white",
+    border: "none",
+  },
+};
