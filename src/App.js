@@ -7,8 +7,8 @@ export let magValue, phaseValue ='';
 
 const App = ({imgId}) => {
   const [selectedImage, setSelectedImage] = useState();
-  // const [magimageUrl, setMagImageUrl] = useState("");
-  // const [phaseimageUrl, setPhaseImageUrl] = useState("");
+  const [magimageUrl, setMagImageUrl] = useState("");
+  const [phaseimageUrl, setPhaseImageUrl] = useState("");
 
   // This function will be triggered when the file field change
   const imageChange = (e) => {
@@ -19,12 +19,12 @@ const App = ({imgId}) => {
       console.log(value)
       if(imgId==='mag'){
         magValue=value;
-        // setMagImageUrl(magValue);
+        setMagImageUrl(magValue);
         console.log('mag'+magValue)
       }
       else{
         phaseValue= value;
-        // setPhaseImageUrl(phaseValue);
+        setPhaseImageUrl(phaseValue);
         console.log('Phase'+phaseValue)
       }     
     }
@@ -38,22 +38,16 @@ const App = ({imgId}) => {
   return (
     <>
       <div style={styles.container}>
-        <input
-          accept="image/*"
-          type="file"
-          onChange={imageChange}
-        />
-        {/* the upload with an icon but it has a small problem in funcionality.. DON'T DELETE PLEASE */}
-        {/* <div>
-          <label htmlFor="myInput"><FileUploadOutlinedIcon style={{ color:'white', fontSize: '30px'}} /></label>
+        <div>
+          <label htmlFor={imgId}><FileUploadOutlinedIcon style={{ color:'white', fontSize: '30px'}} /></label>
           <input
-            id="myInput"
+            id={imgId}
             style={{display:'none'}}
             accept="image/*"
             type="file"
             onChange={imageChange}
           />
-        </div> */}
+        </div>
         {selectedImage && (
           <div style={styles.preview}>
             <img

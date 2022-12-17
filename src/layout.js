@@ -2,17 +2,15 @@ import React from 'react';
 import ReactCrop from 'react-image-crop'
 import Bar from './Bar';
 import App from './App';
+import './App.css';
 import { StyleSheet, View } from 'react-native';
 const styles = StyleSheet.create({
   centre:{
       margin: 'auto',
-      marginTop:'10px',
       width: '90%',
-      border: '3px solid green',
-      padding: '10px'
   },
   margin:{
-    marginTop:'30px'
+    marginTop:'70px'
   },
   container: {
     flex: 1,
@@ -34,23 +32,26 @@ const styles = StyleSheet.create({
     marginBottom: 0
   },
   address:{
+    marginTop:5,
+    fontSize: '16.5px',
     display: 'block',
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '25%',
-    minHeight:'35px',
-    border: '3px solid green',
-    backgroundColor:'#1d222a',
-    color:'white'
+    minHeight:'38px',
+    // border: '0.5px solid whiteSmoke',
+    // backgroundColor:'#1d222a',
+    color:'#f5e8e4'
   },
   
   input_box: {
     display: 'block',
     marginLeft: 'auto',
     marginRight: 'auto',
-    width: '31%',
-    border: '3px solid green',
-    backgroundColor:'#1d222a'
+    width: '30%',
+    // border: '0.5px solid #f5e8e4',
+    borderRadius: '7px',
+    backgroundColor:'#09232b'
   },
   output_box: {
     display: 'block',
@@ -58,8 +59,9 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     width: '35%',
     minHeight: '400px',
-    border: '3px solid green',
-    backgroundColor:'#1d222a'
+    // border: '0.5px solid #f5e8e4',
+    borderRadius: '7px',
+    backgroundColor:'#09232b'
   }
 });
 export default function HeaderFooter() {

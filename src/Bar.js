@@ -15,18 +15,18 @@ function Bar() {
   return (
     <div style={styles.bar}>
         <Button style={styles.icon}
-        startIcon={<CropOutlinedIcon style={{color:'black'}}/>}
+        startIcon={<CropOutlinedIcon style={{color:'whiteSmoke'}}/>}
         >
         Crop
         </Button>
         <Button style={styles.icon}
-        startIcon={<FlipCameraAndroidOutlinedIcon style={{color:'black'}}/>}
+        startIcon={<FlipCameraAndroidOutlinedIcon style={{color:'whiteSmoke'}}/>}
         >
         Flip
         </Button>
         <Button style={styles.icon}
         onClick={downloadImage}
-        startIcon={<FileDownloadOutlinedIcon style={{color:'black'}}/>}
+        startIcon={<FileDownloadOutlinedIcon style={{color:'whiteSmoke'}}/>}
         >
         Download
         </Button>
@@ -39,7 +39,9 @@ export default Bar
 
 const styles = {
     bar:{
-        border: '3px solid green',
+        backgroundColor:'#09232b',
+        border: '1px solid #f5e8e4',
+        borderRadius: '5px',
         textAlign: 'center',
         color: 'white',
         fontSize: '30px',
@@ -54,6 +56,6 @@ const styles = {
         marginBottom:5,       
         paddingRight: '50px',
         paddingLeft: '50px',
-        color:'black',
+        color:'#f5e8e4',
     }
 }
