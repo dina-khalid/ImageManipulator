@@ -1,12 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import HorizontalStack from './layout.js';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import HorizontalStack from "./layout.js";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <HorizontalStack />
-  </React.StrictMode>
-);
-
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<HorizontalStack />);
