@@ -4,6 +4,8 @@ import Bar from "./Bar";
 import App from "./App";
 import "./App.css";
 import { StyleSheet, View } from "react-native";
+import Crop from "./Crop";
+
 const styles = StyleSheet.create({
   centre: {
     margin: "auto",
@@ -88,7 +90,7 @@ export default function HeaderFooter() {
             </View>
             <View style={[styles.output_box]}></View>
             <View style={[styles.input_box]}>
-              <App imgId={"phase"} />
+              <Crop />
             </View>
           </View>
         </View>

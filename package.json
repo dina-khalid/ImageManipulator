@@ -13,10 +13,12 @@
     "file-saver": "^2.0.5",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-easy-crop": "^4.6.3",
     "react-icons": "^4.7.1",
     "react-image-crop": "^10.0.9",
     "react-native-web": "^0.18.10",
     "react-scripts": "5.0.1",
+    "util": "^0.12.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
