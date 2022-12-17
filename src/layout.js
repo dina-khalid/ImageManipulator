@@ -82,12 +82,12 @@ export default function HeaderFooter() {
           <View style={[styles.container]}>
             <View style={[styles.row]}>
               <View style={[styles.input_box]}>
-                <App/>
+                <App imgId={'mag'}/>
               </View>     
               <View style={[styles.output_box]}>
               </View>
               <View style={[styles.input_box]}>
-                <App/>
+                <App imgId={'phase'}/>
               </View> 
             </View> 
           </View> 

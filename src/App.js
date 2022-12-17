@@ -3,13 +3,30 @@
 import { useState } from "react";
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 
-const App = () => {
+export let magValue, phaseValue ='';
+
+const App = ({imgId}) => {
   const [selectedImage, setSelectedImage] = useState();
+  // const [magimageUrl, setMagImageUrl] = useState("");
+  // const [phaseimageUrl, setPhaseImageUrl] = useState("");
 
   // This function will be triggered when the file field change
   const imageChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedImage(e.target.files[0]);
+      console.log(e.target.files[0])
+      let value = URL.createObjectURL(e.target.files[0]);
+      console.log(value)
+      if(imgId==='mag'){
+        magValue=value;
+        // setMagImageUrl(magValue);
+        console.log('mag'+magValue)
+      }
+      else{
+        phaseValue= value;
+        // setPhaseImageUrl(phaseValue);
+        console.log('Phase'+phaseValue)
+      }     
     }
   };
 
@@ -26,7 +43,7 @@ const App = () => {
           type="file"
           onChange={imageChange}
         />
-        {/* the upload with an icon but it has small problem in funcionality.. DON'T DELETE PLEASE */}
+        {/* the upload with an icon but it has a small problem in funcionality.. DON'T DELETE PLEASE */}
         {/* <div>
           <label htmlFor="myInput"><FileUploadOutlinedIcon style={{ color:'white', fontSize: '30px'}} /></label>
           <input
@@ -56,7 +73,6 @@ const App = () => {
 };
 
 export default App;
-
 // Just some styles
 const styles = {
   container: {

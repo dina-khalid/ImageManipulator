@@ -4,8 +4,14 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import CropOutlinedIcon from '@mui/icons-material/CropOutlined';
 import FlipCameraAndroidOutlinedIcon from '@mui/icons-material/FlipCameraAndroidOutlined';
 import { Button } from "@mui/material";
+import { magValue } from './App';
+import { saveAs } from 'file-saver'
+
 
 function Bar() {
+    const downloadImage = () => {
+        saveAs(magValue, 'image.jpg') // Put your image url here.
+      }
   return (
     <div style={styles.bar}>
         <Button style={styles.icon}
@@ -19,8 +25,7 @@ function Bar() {
         Flip
         </Button>
         <Button style={styles.icon}
-        // sx={{ borderRadius: 1 , backgroundColor: 'white'}}
-        // variant="contained"
+        onClick={downloadImage}
         startIcon={<FileDownloadOutlinedIcon style={{color:'black'}}/>}
         >
         Download
