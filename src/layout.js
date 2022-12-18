@@ -5,6 +5,7 @@ import App from "./App";
 import "./App.css";
 import { StyleSheet, View } from "react-native";
 import Crop from "./Crop";
+import ReactCropImage from "./ReactCropImage";
 
 const styles = StyleSheet.create({
   centre: {
@@ -90,7 +91,7 @@ export default function HeaderFooter() {
             </View>
             <View style={[styles.output_box]}></View>
             <View style={[styles.input_box]}>
-              <Crop />
+              <ReactCropImage />
             </View>
           </View>
         </View>
