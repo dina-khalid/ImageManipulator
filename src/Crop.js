@@ -24,6 +24,7 @@ export default function Crop({ imgId }) {
     }
   };
   const onDownload = () => {
+    console.log(croppedArea);
     generateDownload(image, croppedArea);
   };
   return (

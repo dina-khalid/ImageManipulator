@@ -87,7 +87,7 @@ export default function HeaderFooter() {
         <View style={[styles.container]}>
           <View style={[styles.row]}>
             <View style={[styles.input_box]}>
-              <App imgId={"mag"} />
+              <Crop imgId={"mag"} />
             </View>
             <View style={[styles.output_box]}></View>
             <View style={[styles.input_box]}>

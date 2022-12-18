@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-
+import { generateDownload } from "./utils/cropImage";
 import ReactCrop, {
   centerCrop,
   makeAspectCrop,
@@ -21,7 +21,7 @@ function centerAspectCrop(
   return centerCrop(
     makeAspectCrop(
       {
-        unit: '%',
+        unit: 'px',
         width: 90,
       },
       aspect,
@@ -39,9 +39,8 @@ export default function App() {
   const imgRef = useRef<HTMLImageElement>(null)
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
-  const [scale, setScale] = useState(1)
-  const [rotate, setRotate] = useState(0)
-  const [aspect, setAspect] = useState<number | undefined>(16 / 9)
+
+  const [aspect, setAspect] = useState<number | undefined>(undefined)
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
@@ -70,41 +69,69 @@ export default function App() {
         previewCanvasRef.current
       ) {
         // We use canvasPreview as it's much faster than imgPreview.
+        console.log(completedCrop)
         canvasPreview(
           imgRef.current,
           previewCanvasRef.current,
           completedCrop,
-          scale,
-          rotate,
         )
       }
     },
     100,
-    [completedCrop, scale, rotate],
+    [completedCrop],
   )
 
-
+  const onDownload = () => {
+    let crp={
+      width:completedCrop?.width,
+      height:completedCrop?.height,
+      x:completedCrop?.x,
+      y:completedCrop?.y
+    }
+    console.log(crp)
+    generateDownload(imgRef.current?.src, crp);
+  };
 
   return (
     <div className="App">
       <div className="Crop-Controls">
         <input type="file" accept="image/*" onChange={onSelectFile} />
-
-       
-        
+        {/* <div>
+          <label htmlFor="scale-input">Scale: </label>
+          <input
+            id="scale-input"
+            type="number"
+            step="0.1"
+            value={scale}
+            disabled={!imgSrc}
+            onChange={(e) => setScale(Number(e.target.value))}
+          />
+        </div> */}
+        {/* <div>
+          <label htmlFor="rotate-input">Rotate: </label>
+          <input
+            id="rotate-input"
+            type="number"
+            value={rotate}
+            disabled={!imgSrc}
+            onChange={(e) =>
+              setRotate(Math.min(180, Math.max(-180, Number(e.target.value))))
+            }
+          />
+        </div> */}
       </div>
       {!!imgSrc && (
         <ReactCrop
           crop={crop}
           onChange={(_, percentCrop) => setCrop(percentCrop)}
           onComplete={(c) => setCompletedCrop(c)}
-          aspect={aspect}
+          
         >
           <img
             ref={imgRef}
             alt="Crop me"
             src={imgSrc}
-            style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
+            
             onLoad={onImageLoad}
           />
         </ReactCrop>
@@ -122,6 +149,7 @@ export default function App() {
           />
         )}
       </div>
+      <button onClick={onDownload}>Download</button>
     </div>
   )
 }
