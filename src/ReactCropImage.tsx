@@ -69,7 +69,7 @@ export default function App() {
         previewCanvasRef.current
       ) {
         // We use canvasPreview as it's much faster than imgPreview.
-        console.log(completedCrop)
+        console.log(imgRef)
         canvasPreview(
           imgRef.current,
           previewCanvasRef.current,
@@ -82,15 +82,23 @@ export default function App() {
   )
 
   const onDownload = () => {
-    let crp={
-      width:completedCrop?.width,
-      height:completedCrop?.height,
-      x:completedCrop?.x,
-      y:completedCrop?.y
+    if(completedCrop != undefined){ 
+
+      let xratio=(imgRef?.current?.naturalWidth)
+      let x=(imgRef?.current?.width)
+      let rex=xratio/x
+      let yratio=(imgRef?.current?.naturalHeight)
+      let y=(imgRef?.current?.height)
+      let rey=yratio/y
+      let crp={
+      width:previewCanvasRef?.current?.width,
+      height:previewCanvasRef?.current?.height,
+      x:completedCrop?.x*rex,
+      y:completedCrop?.y*rey
     }
-    console.log(crp)
+    // console.log(crp)
     generateDownload(imgRef.current?.src, crp);
-  };
+  }};
 
   return (
     <div className="App">
@@ -124,7 +132,7 @@ export default function App() {
         <ReactCrop
           crop={crop}
           onChange={(_, percentCrop) => setCrop(percentCrop)}
-          onComplete={(c) => setCompletedCrop(c)}
+          onComplete={(c) => { setCompletedCrop(c)}}
           
         >
           <img
