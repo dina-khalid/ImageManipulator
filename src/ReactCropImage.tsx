@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef ,useImperativeHandle} from 'react'
 import { generateDownload } from "./utils/cropImage";
 import ReactCrop, {
   centerCrop,
@@ -33,7 +33,11 @@ function centerAspectCrop(
   )
 }
 
-export default function App() {
+export default function App({width, height,ref,download}) {
+
+//    refDownload?.current.actions.onCkick()
+ 
+  
   const [imgSrc, setImgSrc] = useState('')
   const previewCanvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
@@ -69,7 +73,6 @@ export default function App() {
         previewCanvasRef.current
       ) {
         // We use canvasPreview as it's much faster than imgPreview.
-        console.log(imgRef)
         canvasPreview(
           imgRef.current,
           previewCanvasRef.current,
@@ -81,10 +84,11 @@ export default function App() {
     [completedCrop],
   )
 
-  const onDownload = () => {
+   function onDownload(){
+    console.log(completedCrop)
     if(completedCrop != undefined){ 
 
-      let xratio=(imgRef?.current?.naturalWidth)
+      var xratio=(imgRef?.current?.naturalWidth)
       let x=(imgRef?.current?.width)
       let rex=xratio/x
       let yratio=(imgRef?.current?.naturalHeight)
@@ -98,8 +102,11 @@ export default function App() {
     }
     // console.log(crp)
     generateDownload(imgRef.current?.src, crp);
-  }};
-
+  }}
+  if(download){
+    onDownload();
+    download = false;
+  } 
   return (
     <div className="App">
       <div className="Crop-Controls">
@@ -130,10 +137,13 @@ export default function App() {
       </div>
       {!!imgSrc && (
         <ReactCrop
+          minHeight={height===0?0:height}
+          minWidth={width===0?0:width}
+          maxHeight={height===0?10000:height}
+          maxWidth={width===0?10000:width}
           crop={crop}
           onChange={(_, percentCrop) => setCrop(percentCrop)}
           onComplete={(c) => { setCompletedCrop(c)}}
-          
         >
           <img
             ref={imgRef}
@@ -157,7 +167,6 @@ export default function App() {
           />
         )}
       </div>
-      <button onClick={onDownload}>Download</button>
     </div>
   )
 }

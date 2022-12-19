@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import ReactCrop from "react-image-crop";
 import Bar from "./Bar";
 import App from "./App";
@@ -68,6 +68,11 @@ const styles = StyleSheet.create({
   },
 });
 export default function HeaderFooter() {
+  const [downlaod, setDownlaod] = useState(false);
+
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+
   return (
     <>
       <View style={[styles.margin]}></View>
@@ -91,11 +96,26 @@ export default function HeaderFooter() {
             </View>
             <View style={[styles.output_box]}></View>
             <View style={[styles.input_box]}>
-              <ReactCropImage />
+              <ReactCropImage
+                download={downlaod}
+                width={width}
+                height={height}
+              />
             </View>
           </View>
         </View>
       </View>
+      <button
+        onClick={() => {
+          setDownlaod(true);
+          setTimeout(() => {
+            setDownlaod(false);
+          }, 500);
+          //setDownlaod(false);
+        }}
+      >
+        Download
+      </button>
     </>
   );
 }
