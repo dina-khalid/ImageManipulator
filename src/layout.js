@@ -1,17 +1,42 @@
 import React, { useState, useRef } from "react";
-import ReactCrop from "react-image-crop";
-import Bar from "./Bar";
-import App from "./App";
 import "./App.css";
 import { StyleSheet, View } from "react-native";
 import Crop from "./Crop";
 import ReactCropImage from "./ReactCropImage";
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import CropOutlinedIcon from '@mui/icons-material/CropOutlined';
+import FlipCameraAndroidOutlinedIcon from '@mui/icons-material/FlipCameraAndroidOutlined';
+import { Button } from "@mui/material";
+import { magValue } from './App';
+import { saveAs } from 'file-saver'
+
 
 const styles = StyleSheet.create({
   centre: {
     margin: "auto",
     width: "90%",
   },
+  bar:{
+    backgroundColor:'#09232b',
+    border: '1px solid #f5e8e4',
+    borderRadius: '5px',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: '30px',
+    justifyContent: 'space-between',
+    display: 'block',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width:'50%',
+   
+},
+icon:{
+    marginBottom:5,       
+    paddingRight: '50px',
+    paddingLeft: '50px',
+    color:'#f5e8e4',
+},
   margin: {
     marginTop: "70px",
   },
@@ -20,13 +45,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     textAlign: "center",
-  },
-  header: {
-    height: 40,
-    left: 0,
-    right: 0,
-    top: 100,
-    zIndex: 10,
   },
   row: {
     flex: 1,
@@ -67,9 +85,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#09232b",
   },
 });
+
+
+const downloadImage = () => {
+  saveAs(magValue, 'image.jpg') // Put your image url here.
+}
 export default function HeaderFooter() {
   const [downlaod, setDownlaod] = useState(false);
-
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
@@ -77,7 +99,32 @@ export default function HeaderFooter() {
     <>
       <View style={[styles.margin]}></View>
       <View style={[styles.centre]}>
-        <Bar />
+      <View style={styles.bar}>
+        <Button style={styles.icon}
+        startIcon={<CropOutlinedIcon style={{color:'whiteSmoke'}}/>}
+        onClick={() => {
+          setDownlaod(true);
+          setTimeout(() => {
+            setDownlaod(false);
+          }, 500);
+          //setDownlaod(false);
+        }}
+        >
+        Crop
+        </Button>
+        <Button style={styles.icon}
+        startIcon={<FlipCameraAndroidOutlinedIcon style={{color:'whiteSmoke'}}/>}
+        >
+        Flip
+        </Button>
+        <Button style={styles.icon}
+        // onClick={downloadImage}
+        startIcon={<FileDownloadOutlinedIcon style={{color:'whiteSmoke'}}/>}
+        >
+        Download
+        </Button>
+       
+    </View>
       </View>
       <View style={[styles.margin]}></View>
 
@@ -105,17 +152,6 @@ export default function HeaderFooter() {
           </View>
         </View>
       </View>
-      <button
-        onClick={() => {
-          setDownlaod(true);
-          setTimeout(() => {
-            setDownlaod(false);
-          }, 500);
-          //setDownlaod(false);
-        }}
-      >
-        Download
-      </button>
     </>
   );
 }
