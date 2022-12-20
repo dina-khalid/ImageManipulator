@@ -1,6 +1,7 @@
 # Import flask and datetime module for showing date and time
 from flask import Flask, request
 import datetime
+import os
 
 from image_processing import *
 
@@ -31,12 +32,20 @@ def add_cors_headers(response):
 def process_image():
     if request.method == 'POST':
         print("DonePost")
-        RGB2Gray('image.jpeg', 'mag_image')
-        RGB2Gray('image (1).jpeg', 'phase_img')
-        mag_img, phase_img = resize_images('mag_image.png', 'phase_img.png')
-        combined_img = mag_phase_mix(mag_img, phase_img)
-        return 'Done Mix!!'
-        # return combined_img
+        path = '/home/dina/Music/ImageManipulator/src/cat.jpeg' 
+        
+
+        mag_img, phase_img = resize_images('../image.jpeg','../image (1).jpeg')
+        combined_state = mag_phase_mix(mag_img, phase_img,path)
+        print(combined_state)
+        img1_path = '/home/dina/image.jpeg'
+        img2_path = '/home/dina/image (1).jpeg'
+
+        if os.path.exists(img1_path):
+            os.remove(img1_path)
+        if os.path.exists(img2_path):
+            os.remove(img2_path)
+        return 'Done'
 
 
 # Running app

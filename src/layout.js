@@ -10,7 +10,7 @@ import FlipCameraAndroidOutlinedIcon from "@mui/icons-material/FlipCameraAndroid
 import { Button } from "@mui/material";
 import { magValue } from "./App";
 import { saveAs } from "file-saver";
-import myImage from "../src/cat.png";
+import myImage from "../src/cat.jpeg";
 import axios from "axios";
 const styles = StyleSheet.create({
   centre: {
