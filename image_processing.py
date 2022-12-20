@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from PIL import Image
 import cv2
 
@@ -12,8 +11,8 @@ def RGB2Gray(imag_path,name):
 
 def resize_images(path_1,path_2):
     image_1 = cv2.imread(path_1, cv2.IMREAD_UNCHANGED)
-    print(image_1)
     image_2 = cv2.imread(path_2, cv2.IMREAD_UNCHANGED)
+
     # With Pillow you can read the size property of the image
     width_1, height_1 = image_1.shape[0],image_1.shape[1]
     res_1 = width_1 * height_1

@@ -11,7 +11,6 @@ import { Button } from "@mui/material";
 import { magValue } from './App';
 import { saveAs } from 'file-saver'
 
-
 const styles = StyleSheet.create({
   centre: {
     margin: "auto",
@@ -102,11 +101,33 @@ export default function HeaderFooter() {
       <View style={styles.bar}>
         <Button style={styles.icon}
         startIcon={<CropOutlinedIcon style={{color:'whiteSmoke'}}/>}
-        onClick={() => {
+         onClick={async () => {
           setDownlaod(true);
           setTimeout(() => {
-            setDownlaod(false);
+          setDownlaod(false);
           }, 500);
+           
+            try {
+                var res =  await fetch('http://127.0.0.1:5000//process', {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  
+                },
+                body: JSON.stringify('done'),
+              });
+              if (res.ok) {
+                try {
+                  const data = await res.json();
+                  return data;
+                } catch {
+                  console.log("Success");
+                }
+              }
+            } catch (e) {
+              console.log(e);
+            }
+          
           //setDownlaod(false);
         }}
         >
