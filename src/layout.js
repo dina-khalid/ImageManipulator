@@ -155,16 +155,29 @@ export default function HeaderFooter() {
           <View style={[styles.address]}>THE RESULT</View>
           <View style={[styles.address]}>PHASE INPUT</View>
         </View>
+
+
+
       </View>
       <View style={[styles.centre]}>
         <View style={[styles.container]}>
           <View style={[styles.row]}>
             <View style={[styles.input_box]}>
-              <Crop imgId={"mag"} />
+            <ReactCropImage
+                imgId={"mag"}
+                download={downlaod}
+                width={width}
+                height={height}
+              />
             </View>
+
+
+
+
             <View style={[styles.output_box]}></View>
             <View style={[styles.input_box]}>
               <ReactCropImage
+                imgId={"phase"}
                 download={downlaod}
                 width={width}
                 height={height}

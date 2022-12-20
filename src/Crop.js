@@ -34,8 +34,10 @@ export default function Crop({ imgId }) {
       </button>
       <div style={styles.container}>
         <div>
+          <label htmlFor={imgId}><FileUploadOutlinedIcon style={{color:'white', fontSize: '30px'}}/></label>
           <input
             id={imgId}
+            style={{display:'none'}}
             accept="image/*"
             type="file"
             onChange={onSelectFile}

@@ -1,5 +1,7 @@
 import React, { useState, useRef ,useImperativeHandle} from 'react'
 import { generateDownload } from "./utils/cropImage";
+import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
+
 import ReactCrop, {
   centerCrop,
   makeAspectCrop,
@@ -33,7 +35,7 @@ function centerAspectCrop(
   )
 }
 
-export default function App({width, height,ref,download}) {
+export default function App({imgId,width, height,ref,download}) {
 
 //    refDownload?.current.actions.onCkick()
  
@@ -110,7 +112,10 @@ export default function App({width, height,ref,download}) {
   return (
     <div className="App">
       <div className="Crop-Controls">
-        <input type="file" accept="image/*" onChange={onSelectFile} />
+      <label htmlFor={imgId}><FileUploadOutlinedIcon style={{color:'white', fontSize: '30px'}}/></label>
+          <input
+            id={imgId}
+            style={{display:'none'}} type="file" accept="image/*" onChange={onSelectFile} />
         {/* <div>
           <label htmlFor="scale-input">Scale: </label>
           <input
