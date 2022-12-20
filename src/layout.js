@@ -3,39 +3,39 @@ import "./App.css";
 import { StyleSheet, View } from "react-native";
 import Crop from "./Crop";
 import ReactCropImage from "./ReactCropImage";
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import CropOutlinedIcon from '@mui/icons-material/CropOutlined';
-import FlipCameraAndroidOutlinedIcon from '@mui/icons-material/FlipCameraAndroidOutlined';
+import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import CropOutlinedIcon from "@mui/icons-material/CropOutlined";
+import FlipCameraAndroidOutlinedIcon from "@mui/icons-material/FlipCameraAndroidOutlined";
 import { Button } from "@mui/material";
-import { magValue } from './App';
-import { saveAs } from 'file-saver'
-
+import { magValue } from "./App";
+import { saveAs } from "file-saver";
+import myImage from "../src/cat.png";
+import axios from "axios";
 const styles = StyleSheet.create({
   centre: {
     margin: "auto",
     width: "90%",
   },
-  bar:{
-    backgroundColor:'#09232b',
-    border: '1px solid #f5e8e4',
-    borderRadius: '5px',
-    textAlign: 'center',
-    color: 'white',
-    fontSize: '30px',
-    justifyContent: 'space-between',
-    display: 'block',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    width:'50%',
-   
-},
-icon:{
-    marginBottom:5,       
-    paddingRight: '50px',
-    paddingLeft: '50px',
-    color:'#f5e8e4',
-},
+  bar: {
+    backgroundColor: "#09232b",
+    border: "1px solid #f5e8e4",
+    borderRadius: "5px",
+    textAlign: "center",
+    color: "white",
+    fontSize: "30px",
+    justifyContent: "space-between",
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
+    width: "50%",
+  },
+  icon: {
+    marginBottom: 5,
+    paddingRight: "50px",
+    paddingLeft: "50px",
+    color: "#f5e8e4",
+  },
   margin: {
     marginTop: "70px",
   },
@@ -85,10 +85,9 @@ icon:{
   },
 });
 
-
 const downloadImage = () => {
-  saveAs(magValue, 'image.jpg') // Put your image url here.
-}
+  saveAs(magValue, "image.jpg"); // Put your image url here.
+};
 export default function HeaderFooter() {
   const [downlaod, setDownlaod] = useState(false);
   const [width, setWidth] = useState(0);
@@ -98,54 +97,66 @@ export default function HeaderFooter() {
     <>
       <View style={[styles.margin]}></View>
       <View style={[styles.centre]}>
-      <View style={styles.bar}>
-        <Button style={styles.icon}
-        startIcon={<CropOutlinedIcon style={{color:'whiteSmoke'}}/>}
-         onClick={async () => {
-          setDownlaod(true);
-          setTimeout(() => {
-          setDownlaod(false);
-          }, 500);
-           
-            try {
-                var res =  await fetch('http://127.0.0.1:5000//process', {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  
-                },
-                body: JSON.stringify('done'),
-              });
-              if (res.ok) {
-                try {
-                  const data = await res.json();
-                  return data;
-                } catch {
-                  console.log("Success");
-                }
-              }
-            } catch (e) {
-              console.log(e);
+        <View style={styles.bar}>
+          <Button
+            style={styles.icon}
+            startIcon={<CropOutlinedIcon style={{ color: "whiteSmoke" }} />}
+            onClick={async () => {
+              setDownlaod(true);
+              setTimeout(() => {
+                setDownlaod(false);
+              }, 500);
+
+              axios
+                .post("http://127.0.0.1:5000//process", {})
+                .then((response) => {
+                  console.log(response.data);
+                });
+              // try {
+              //   await fetch("http://127.0.0.1:5000//process", {
+              //     method: "POST",
+              //     headers: {
+              //       "Content-Type": "application/json",
+              //     },
+              //     body: JSON.stringify("done"),
+              //   }).then((response) => {
+              //     console.log("aaaa");
+              //   });
+              //   if (res.ok) {
+              //     try {
+              //       const data = await res.json();
+              //       return data;
+              //     } catch {
+              //       console.log("Success");
+              //     }
+              //   }}
+              // } catch (e) {
+              //   console.log(e);
+              // }
+
+              //setDownlaod(false);
+            }}
+          >
+            Crop
+          </Button>
+          <Button
+            style={styles.icon}
+            startIcon={
+              <FlipCameraAndroidOutlinedIcon style={{ color: "whiteSmoke" }} />
             }
-          
-          //setDownlaod(false);
-        }}
-        >
-        Crop
-        </Button>
-        <Button style={styles.icon}
-        startIcon={<FlipCameraAndroidOutlinedIcon style={{color:'whiteSmoke'}}/>}
-        >
-        Flip
-        </Button>
-        <Button style={styles.icon}
-        // onClick={downloadImage}
-        startIcon={<FileDownloadOutlinedIcon style={{color:'whiteSmoke'}}/>}
-        >
-        Download
-        </Button>
-       
-    </View>
+          >
+            Flip
+          </Button>
+          <Button
+            style={styles.icon}
+            // onClick={downloadImage}
+            startIcon={
+              <FileDownloadOutlinedIcon style={{ color: "whiteSmoke" }} />
+            }
+          >
+            Download
+          </Button>
+        </View>
       </View>
       <View style={[styles.margin]}></View>
 
@@ -155,15 +166,12 @@ export default function HeaderFooter() {
           <View style={[styles.address]}>THE RESULT</View>
           <View style={[styles.address]}>PHASE INPUT</View>
         </View>
-
-
-
       </View>
       <View style={[styles.centre]}>
         <View style={[styles.container]}>
           <View style={[styles.row]}>
             <View style={[styles.input_box]}>
-            <ReactCropImage
+              <ReactCropImage
                 imgId={"mag"}
                 download={downlaod}
                 width={width}
@@ -171,10 +179,9 @@ export default function HeaderFooter() {
               />
             </View>
 
-
-
-
-            <View style={[styles.output_box]}></View>
+            <View style={[styles.output_box]}>
+              <img src={myImage} alt="output" />
+            </View>
             <View style={[styles.input_box]}>
               <ReactCropImage
                 imgId={"phase"}

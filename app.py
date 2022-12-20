@@ -9,19 +9,8 @@ x = datetime.datetime.now()
 # Initializing flask app
 app = Flask(__name__)
 
-obj = {
-    'Name': "geek",
-            "Age": "22",
-            "Date": x,
-            "programming": "python"
-}
-obj2 = {
-    'Name': "qwqw",
-            "Age": "12344",
-            "Date": x,
-            "programming": "python"
-}
 # Route for seeing a data
+
 
 @app.after_request
 def add_cors_headers(response):
@@ -33,24 +22,21 @@ def add_cors_headers(response):
     response.headers.add('Access-Control-Allow-Headers', 'Cache-Control')
     response.headers.add('Access-Control-Allow-Headers', 'X-Requested-With')
     response.headers.add('Access-Control-Allow-Headers', 'Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
+    response.headers.add('Access-Control-Allow-Methods',
+                         'GET, POST, OPTIONS, PUT, DELETE')
     return response
+
 
 @app.route('/process', methods=['GET', 'POST'])
 def process_image():
-    if request.method == 'GET':
-        return obj
     if request.method == 'POST':
         print("DonePost")
-        RGB2Gray('image.jpeg','mag_image')
-        RGB2Gray('image (1).jpeg','phase_img')
-        mag_img, phase_img = resize_images('mag_image.png','phase_img.png')
+        RGB2Gray('image.jpeg', 'mag_image')
+        RGB2Gray('image (1).jpeg', 'phase_img')
+        mag_img, phase_img = resize_images('mag_image.png', 'phase_img.png')
         combined_img = mag_phase_mix(mag_img, phase_img)
         return 'Done Mix!!'
         # return combined_img
-        
-
-
 
 
 # Running app
