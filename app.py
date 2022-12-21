@@ -65,6 +65,7 @@ def upload():
         return request.data
 
 
+
 @app.route('/process2', methods=['GET', 'POST'])
 def crop():
     if request.method == 'POST':
