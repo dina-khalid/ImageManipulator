@@ -12,6 +12,26 @@ x = datetime.datetime.now()
 app = Flask(__name__)
 
 # Route for seeing a data
+obj = {
+    'image1': None,
+    'image2': None,
+}
+obj1 = {
+    'total_width': None,
+    'total_height': None,
+    'crop_width': None,
+    'crop_height': None,
+    'x': None,
+    'y': None,
+}
+obj2 = {
+    'total_width': None,
+    'total_height': None,
+    'crop_width': None,
+    'crop_height': None,
+    'x': None,
+    'y': None,
+}
 
 
 @app.after_request
@@ -51,7 +71,39 @@ def process_image():
 def upload():
     if request.method == 'POST':
         a = request.get_json()
-        print(a['name'])
+
+        if 'phase' in a.keys():
+            image1 = a['phase']
+            obj['image1'] = image1
+
+        if 'mag' in a.keys():
+            image2 = a['mag']
+            obj['image2'] = image2
+
+        print(obj)
+        return request.data
+
+
+@app.route('/process2', methods=['GET', 'POST'])
+def crop():
+    if request.method == 'POST':
+        a = request.get_json()
+        if 'phase' in a.keys():
+            obj1['total_width'] = a['phase']['img_width']
+            obj1['total_height'] = a['phase']['img_height']
+            obj1['crop_width'] = a['phase']['cropped_width']
+            obj1['crop_height'] = a['phase']['cropped_height']
+            obj1['x'] = a['phase']['x']
+            obj1['y'] = a['phase']['y']
+        else:
+            obj2['total_width'] = a['mag']['img_width']
+            obj2['total_height'] = a['mag']['img_height']
+            obj2['crop_width'] = a['mag']['cropped_width']
+            obj2['crop_height'] = a['mag']['cropped_height']
+            obj2['x'] = a['mag']['x']
+            obj2['y'] = a['mag']['y']
+
+        print(obj1, obj2)
         return request.data
 
 

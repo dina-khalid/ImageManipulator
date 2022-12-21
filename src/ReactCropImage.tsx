@@ -49,15 +49,25 @@ export default function App({imgId,width, height,download,downloadAction}) {
   const [aspect, setAspect] = useState<number | undefined>(undefined)
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
-
     if (e.target.files && e.target.files.length > 0) {
       console.log()
+      if(imgId=='phase'){
       axios.post("http://127.0.0.1:5000//process1",{
-      name:e.target.files[0].name
+      phase:e.target.files[0].name
     }).then((res)=>{
+      console.log(res)
+    }).catch((error) => {
+      console.log(error)
+    })}
+    else{
+      axios.post("http://127.0.0.1:5000//process1",{
+      mag:e.target.files[0].name
+    }).then((res)=>{
+      console.log(res)
     }).catch((error) => {
       console.log(error)
     })
+    }
     
       setCrop(undefined) // Makes crop preview update between images.
       const reader = new FileReader()
@@ -79,6 +89,30 @@ export default function App({imgId,width, height,download,downloadAction}) {
 
   useDebounceEffect(
     async () => {
+      console.log(imgRef.current?.width,imgRef.current?.height)
+      console.log(completedCrop?.width,completedCrop?.height)
+      console.log(completedCrop?.x,completedCrop?.y)
+      const obj={
+        img_width:imgRef.current?.width,
+        img_height:imgRef.current?.height,
+        cropped_width:completedCrop?.width,
+        cropped_height:completedCrop?.height,
+        x:completedCrop?.x,
+        y:completedCrop?.y
+      }
+      if(imgId=='phase'){
+      axios.post("http://127.0.0.1:5000//process2",{
+        phase:obj
+      }).then((res)=>{
+        console.log(res)
+      })}
+      else
+      {
+      axios.post("http://127.0.0.1:5000//process2",{
+        mag:obj
+      }).then((res)=>{
+        console.log(res)
+      })}
       if (
         completedCrop?.width &&
         completedCrop?.height &&
@@ -137,8 +171,13 @@ export default function App({imgId,width, height,download,downloadAction}) {
   
           crop={crop}
           onChange={(_, percentCrop) => setCrop(percentCrop)}
-          onComplete={(c) => { setCompletedCrop(c)
-           }}
+          onComplete={(c) => {
+            
+            setCompletedCrop(c)
+            
+            //
+          //console.log(completedCrop?.width,completedCrop?.height) 
+          }}
         >
           <img
             ref={imgRef}
