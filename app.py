@@ -48,25 +48,6 @@ def add_cors_headers(response):
                          'GET, POST, OPTIONS, PUT, DELETE')
     return response
 
-
-@app.route('/process', methods=['GET', 'POST'])
-def process_image():
-    if request.method == 'POST':
-        print("DonePost")
-        path = 'C:/Users/nasse/OneDrive/Desktop/task4_ver2/ImageManipulator/src/cat.jpeg'
-        img1_path = 'C:/Users/nasse/Downloads/image.jpeg'
-        img2_path = 'C:/Users/nasse/Downloads/image (1).jpeg'
-        mag_img, phase_img = resize_images(img1_path, img2_path)
-        combined_state = mag_phase_mix(mag_img, phase_img, path)
-        print(combined_state)
-
-        if os.path.exists(img1_path):
-            os.remove(img1_path)
-        if os.path.exists(img2_path):
-            os.remove(img2_path)
-        return 'Done'
-
-
 @app.route('/process1', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
@@ -104,6 +85,28 @@ def crop():
             obj2['y'] = a['mag']['y']
 
         print(obj1, obj2)
+        out_path = 'src/cat.jpeg'
+
+
+
+        if obj['image2'] == None:
+            phase_img = RGB2Gray(str(obj['image1']))
+            x_start,x_end, y_start, y_end = calc_dim(obj1['x'],obj1['y'], obj1['total_width'],obj1['total_height'], obj1['crop_width'], obj1['crop_height'],len(phase_img))
+            mix_with_uniform_mag(phase_img,out_path,x_start,x_end, y_start, y_end)
+
+        elif obj['image1'] == None:
+            mag_img = RGB2Gray(str(obj['image2']))
+            x_start,x_end, y_start, y_end = calc_dim(obj2['x'],obj2['y'], obj2['total_width'],obj2['total_height'], obj2['crop_width'], obj2['crop_height'],len(mag_img))
+
+            mix_with_uniform_phase(mag_img,out_path,x_start,x_end, y_start, y_end)
+
+        else:
+            phase_img = RGB2Gray(str(obj['image1']))
+            mag_img = RGB2Gray(str(obj['image2']))
+            x1_start,x1_end, y1_start, y1_end = calc_dim(obj1['x'],obj1['y'], obj1['total_width'],obj1['total_height'], obj1['crop_width'], obj1['crop_height'],len(mag_img))
+            x2_start,x2_end, y2_start, y2_end = calc_dim(obj2['x'],obj2['y'], obj2['total_width'],obj2['total_height'], obj2['crop_width'], obj2['crop_height'],len(mag_img))
+            mag_phase_mix(phase_img, mag_img, out_path,x1_start,x1_end, y1_start, y1_end,x2_start,x2_end, y2_start, y2_end)
+
         return request.data
 
 

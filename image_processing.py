@@ -3,38 +3,58 @@ from PIL import Image
 import cv2
 
 
-def resize_images(path_1, path_2):
-    image_1 = cv2.imread(path_1, cv2.IMREAD_UNCHANGED)
-    print(image_1)
-    image_1 = cv2.cvtColor(image_1, cv2.COLOR_BGR2GRAY)
+def calc_dim(x,y,w,h,c_w,c_h,dim):
+    x_start = (x/w)*dim
+    x_end = ((x+c_w)/w)*dim
+    y_start = (y/h)*dim
+    y_end = ((y+c_h)/h)*dim
 
-    image_2 = cv2.imread(path_2, cv2.IMREAD_UNCHANGED)
-    image_2 = cv2.cvtColor(image_2, cv2.COLOR_BGR2GRAY)
+    return x_start,x_end, y_start, y_end
 
-    # With Pillow you can read the size property of the image
-    width_1, height_1 = image_1.shape[0], image_1.shape[1]
-    res_1 = width_1 * height_1
-    width_2, height_2 = image_2.shape[0], image_2.shape[1]
-
-    res_2 = width_2 * height_2
-    if res_2 < res_1:
-        # You need a scale factor to resize the image to res_1
-        res = cv2.resize(image_2, dsize=(height_1, width_1),
-                         interpolation=cv2.INTER_LINEAR)
-
-        # image_1.resize(width_1 * scale_factor, height_1 * scale_factor)# With Pillow you can read the size property of the image
-        return image_1, res
-        # You need a scale factor to resize the image to res_1
-    res = cv2.resize(image_1, dsize=(height_2, width_2))
-
-    # image_2.resize(width_2 * scale_factor, height_2 * scale_factor)# With Pillow you can read the size property of the image
-    return res, image_2
+def RGB2Gray(path):
+    image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    return image
 
 
-def mag_phase_mix(mag_img, phase_img, out_path):
+def mag_phase_mix(phase_img, mag_img, out_path,x1_start,x1_end, y1_start, y1_end,x2_start,x2_end, y2_start, y2_end):
+
     f_mag = np.fft.fft2(mag_img)
+    dim = len(f_mag)
+    crop(x2_start,x2_end, y2_start, y2_end, dim, f_mag)
+
     f_phase = np.fft.fft2(phase_img)
+    crop(x1_start,x1_end, y1_start, y1_end, dim, f_phase)
+
+
     combined = np.multiply(np.abs(f_mag), np.exp(1j * np.angle(f_phase)))
     combined_img = np.real(np.fft.ifft2(combined))
-
     return cv2.imwrite(out_path, combined_img)
+
+
+def mix_with_uniform_mag(phase_img,out_path,x_start,x_end, y_start, y_end):
+    f_phase = np.fft.fft2(phase_img)
+    dim = len(f_phase)
+    crop(x_start,x_end, y_start, y_end, dim, f_phase)
+    combined = np.multiply(np.ones(f_phase.shape)*255, np.exp(1j * np.angle(f_phase)))
+
+    phase_only = np.real(np.fft.ifft2(combined))
+    return cv2.imwrite(out_path, phase_only)
+
+
+def mix_with_uniform_phase(mag_img,out_path,x_start,x_end, y_start, y_end):
+    f_mag = np.fft.fft2(mag_img)
+    dim = len(f_mag)
+    crop(x_start,x_end, y_start, y_end, dim, f_mag)
+    mag_only = np.real(np.fft.ifft2(np.abs(f_mag)))
+
+    return cv2.imwrite(out_path, mag_only)
+
+
+def crop(x_start,x_end, y_start, y_end, dim, img):
+    for i in range(dim):
+        for j in range(dim):
+            if (i>x_start or i<x_end) and (j<y_start or j>y_end ):
+                img[i][j] = 1
+
+
