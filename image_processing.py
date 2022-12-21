@@ -19,12 +19,12 @@ def RGB2Gray(path):
 
 def mag_phase_mix(phase_img, mag_img, out_path,x1_start,x1_end, y1_start, y1_end,x2_start,x2_end, y2_start, y2_end):
 
+    dim = len(mag_img)
+    crop(x2_start,x2_end, y2_start, y2_end, dim, mag_img,10)
     f_mag = np.fft.fft2(mag_img)
-    dim = len(f_mag)
-    crop(x2_start,x2_end, y2_start, y2_end, dim, f_mag)
 
+    crop(x1_start,x1_end, y1_start, y1_end, dim, phase_img,0)
     f_phase = np.fft.fft2(phase_img)
-    crop(x1_start,x1_end, y1_start, y1_end, dim, f_phase)
 
 
     combined = np.multiply(np.abs(f_mag), np.exp(1j * np.angle(f_phase)))
@@ -33,28 +33,33 @@ def mag_phase_mix(phase_img, mag_img, out_path,x1_start,x1_end, y1_start, y1_end
 
 
 def mix_with_uniform_mag(phase_img,out_path,x_start,x_end, y_start, y_end):
+    dim = len(phase_img)
+    crop(x_start,x_end, y_start, y_end, dim, phase_img,0)
     f_phase = np.fft.fft2(phase_img)
-    dim = len(f_phase)
-    crop(x_start,x_end, y_start, y_end, dim, f_phase)
-    combined = np.multiply(np.ones(f_phase.shape)*255, np.exp(1j * np.angle(f_phase)))
+    f_mag = np.fft.fft2(np.ones(f_phase.shape))
+
+    combined = np.multiply(np.abs(f_mag), np.exp(1j * np.angle(f_phase)))
 
     phase_only = np.real(np.fft.ifft2(combined))
     return cv2.imwrite(out_path, phase_only)
 
 
 def mix_with_uniform_phase(mag_img,out_path,x_start,x_end, y_start, y_end):
+    dim = len(mag_img)
+    crop(x_start,x_end, y_start, y_end, dim, mag_img,10)
     f_mag = np.fft.fft2(mag_img)
-    dim = len(f_mag)
-    crop(x_start,x_end, y_start, y_end, dim, f_mag)
+
     mag_only = np.real(np.fft.ifft2(np.abs(f_mag)))
 
     return cv2.imwrite(out_path, mag_only)
 
 
-def crop(x_start,x_end, y_start, y_end, dim, img):
+def crop(x_start,x_end, y_start, y_end, dim, img, fill_value):
     for i in range(dim):
         for j in range(dim):
-            if (i>x_start or i<x_end) and (j<y_start or j>y_end ):
-                img[i][j] = 1
+            if (x_start<j<x_end) and (y_start< i<y_end ):
+                pass
+            else:
+                img[i][j] = fill_value
 
 
