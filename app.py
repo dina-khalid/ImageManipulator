@@ -2,7 +2,8 @@
 from flask import Flask, request
 import datetime
 import os
-
+import cv2
+import matplotlib.pyplot as plt
 from image_processing import *
 
 x = datetime.datetime.now()
@@ -32,20 +33,26 @@ def add_cors_headers(response):
 def process_image():
     if request.method == 'POST':
         print("DonePost")
-        path = '/home/dina/Music/ImageManipulator/src/cat.jpeg' 
-        
-
-        mag_img, phase_img = resize_images('../image.jpeg','../image (1).jpeg')
-        combined_state = mag_phase_mix(mag_img, phase_img,path)
+        path = 'C:/Users/nasse/OneDrive/Desktop/task4_ver2/ImageManipulator/src/cat.jpeg'
+        img1_path = 'C:/Users/nasse/Downloads/image.jpeg'
+        img2_path = 'C:/Users/nasse/Downloads/image (1).jpeg'
+        mag_img, phase_img = resize_images(img1_path, img2_path)
+        combined_state = mag_phase_mix(mag_img, phase_img, path)
         print(combined_state)
-        img1_path = '/home/dina/image.jpeg'
-        img2_path = '/home/dina/image (1).jpeg'
 
         if os.path.exists(img1_path):
             os.remove(img1_path)
         if os.path.exists(img2_path):
             os.remove(img2_path)
         return 'Done'
+
+
+@app.route('/process1', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        a = request.get_json()
+        print(a['name'])
+        return request.data
 
 
 # Running app

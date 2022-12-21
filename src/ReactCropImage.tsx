@@ -1,7 +1,7 @@
-import React, { useState, useRef ,useImperativeHandle} from 'react'
+import React, { useState, useRef} from 'react'
 import { generateDownload } from "./utils/cropImage";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
-
+import axios from "axios";
 import ReactCrop, {
   centerCrop,
   makeAspectCrop,
@@ -34,8 +34,8 @@ function centerAspectCrop(
     mediaHeight,
   )
 }
-
-export default function App({imgId,width, height,ref,download}) {
+//@ts-ignore
+export default function App({imgId,width, height,download,downloadAction}) {
 
 //    refDownload?.current.actions.onCkick()
  
@@ -49,7 +49,16 @@ export default function App({imgId,width, height,ref,download}) {
   const [aspect, setAspect] = useState<number | undefined>(undefined)
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
+
     if (e.target.files && e.target.files.length > 0) {
+      console.log()
+      axios.post("http://127.0.0.1:5000//process1",{
+      name:e.target.files[0].name
+    }).then((res)=>{
+    }).catch((error) => {
+      console.log(error)
+    })
+    
       setCrop(undefined) // Makes crop preview update between images.
       const reader = new FileReader()
       reader.addEventListener('load', () =>
@@ -60,6 +69,8 @@ export default function App({imgId,width, height,ref,download}) {
   }
 
   function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+    
+    
     if (aspect) {
       const { width, height } = e.currentTarget
       setCrop(centerAspectCrop(width, height, aspect))
@@ -86,15 +97,17 @@ export default function App({imgId,width, height,ref,download}) {
     [completedCrop],
   )
 
-   function onDownload(){
-    console.log(completedCrop)
+   async function onDownload(){
+    
     if(completedCrop != undefined){ 
 
       var xratio=(imgRef?.current?.naturalWidth)
       let x=(imgRef?.current?.width)
+      //@ts-ignore
       let rex=xratio/x
       let yratio=(imgRef?.current?.naturalHeight)
       let y=(imgRef?.current?.height)
+      //@ts-ignore
       let rey=yratio/y
       let crp={
       width:previewCanvasRef?.current?.width,
@@ -116,39 +129,16 @@ export default function App({imgId,width, height,ref,download}) {
           <input
             id={imgId}
             style={{display:'none'}} type="file" accept="image/*" onChange={onSelectFile} />
-        {/* <div>
-          <label htmlFor="scale-input">Scale: </label>
-          <input
-            id="scale-input"
-            type="number"
-            step="0.1"
-            value={scale}
-            disabled={!imgSrc}
-            onChange={(e) => setScale(Number(e.target.value))}
-          />
-        </div> */}
-        {/* <div>
-          <label htmlFor="rotate-input">Rotate: </label>
-          <input
-            id="rotate-input"
-            type="number"
-            value={rotate}
-            disabled={!imgSrc}
-            onChange={(e) =>
-              setRotate(Math.min(180, Math.max(-180, Number(e.target.value))))
-            }
-          />
-        </div> */}
+  
+      
       </div>
       {!!imgSrc && (
         <ReactCrop
-          minHeight={height===0?0:height}
-          minWidth={width===0?0:width}
-          maxHeight={height===0?10000:height}
-          maxWidth={width===0?10000:width}
+  
           crop={crop}
           onChange={(_, percentCrop) => setCrop(percentCrop)}
-          onComplete={(c) => { setCompletedCrop(c)}}
+          onComplete={(c) => { setCompletedCrop(c)
+           }}
         >
           <img
             ref={imgRef}

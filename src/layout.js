@@ -85,13 +85,22 @@ const styles = StyleSheet.create({
   },
 });
 
-const downloadImage = () => {
-  saveAs(magValue, "image.jpg"); // Put your image url here.
-};
 export default function HeaderFooter() {
   const [downlaod, setDownlaod] = useState(false);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+
+  const downloadAction = (x) => {
+    console.log("Downloading");
+    setDownlaod(true);
+    setTimeout(() => {
+      setDownlaod(false);
+    }, 200);
+    setTimeout(() => {}, 200);
+    axios.post("http://127.0.0.1:5000//process", {}).then((response) => {
+      console.log(response.data);
+    });
+  };
 
   return (
     <>
@@ -101,41 +110,7 @@ export default function HeaderFooter() {
           <Button
             style={styles.icon}
             startIcon={<CropOutlinedIcon style={{ color: "whiteSmoke" }} />}
-            onClick={async () => {
-              setDownlaod(true);
-              setTimeout(() => {
-                setDownlaod(false);
-              }, 500);
-
-              axios
-                .post("http://127.0.0.1:5000//process", {})
-                .then((response) => {
-                  console.log(response.data);
-                });
-              // try {
-              //   await fetch("http://127.0.0.1:5000//process", {
-              //     method: "POST",
-              //     headers: {
-              //       "Content-Type": "application/json",
-              //     },
-              //     body: JSON.stringify("done"),
-              //   }).then((response) => {
-              //     console.log("aaaa");
-              //   });
-              //   if (res.ok) {
-              //     try {
-              //       const data = await res.json();
-              //       return data;
-              //     } catch {
-              //       console.log("Success");
-              //     }
-              //   }}
-              // } catch (e) {
-              //   console.log(e);
-              // }
-
-              //setDownlaod(false);
-            }}
+            onClick={downloadAction}
           >
             Crop
           </Button>
@@ -176,6 +151,7 @@ export default function HeaderFooter() {
                 download={downlaod}
                 width={width}
                 height={height}
+                downloadAction={downloadAction}
               />
             </View>
 
@@ -188,6 +164,7 @@ export default function HeaderFooter() {
                 download={downlaod}
                 width={width}
                 height={height}
+                downloadAction={downloadAction}
               />
             </View>
           </View>
