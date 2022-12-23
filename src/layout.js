@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   bar: {
     backgroundColor: "#09232b",
-    border: "1px solid #f5e8e4",
+    // border: "1px solid #f5e8e4",
     borderRadius: "5px",
     textAlign: "center",
     color: "white",
@@ -107,34 +107,11 @@ export default function HeaderFooter() {
       <View style={[styles.margin]}></View>
       <View style={[styles.centre]}>
         <View style={styles.bar}>
-          <Button
-            style={styles.icon}
-            startIcon={<CropOutlinedIcon style={{ color: "whiteSmoke" }} />}
-            onClick={downloadAction}
-          >
-            Crop
-          </Button>
-          <Button
-            style={styles.icon}
-            startIcon={
-              <FlipCameraAndroidOutlinedIcon style={{ color: "whiteSmoke" }} />
-            }
-          >
-            Flip
-          </Button>
-          <Button
-            style={styles.icon}
-            // onClick={downloadImage}
-            startIcon={
-              <FileDownloadOutlinedIcon style={{ color: "whiteSmoke" }} />
-            }
-          >
-            Download
-          </Button>
-        </View>
+      image mixer
+       </View>
       </View>
-      <View style={[styles.margin]}></View>
 
+      <View style={[styles.margin]}></View>
       <View style={[styles.centre]}>
         <View style={[styles.container]}>
           <View style={[styles.address]}>MAGNITUDE INPUT</View>
