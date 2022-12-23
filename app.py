@@ -4,7 +4,7 @@ import datetime
 import os
 import cv2
 import matplotlib.pyplot as plt
-from image_processing import *
+from image_processing import Image
 
 x = datetime.datetime.now()
 
@@ -12,26 +12,8 @@ x = datetime.datetime.now()
 app = Flask(__name__)
 
 # Route for seeing a data
-obj = {
-    'image1': None,
-    'image2': None,
-}
-obj1 = {
-    'total_width': None,
-    'total_height': None,
-    'crop_width': None,
-    'crop_height': None,
-    'x': None,
-    'y': None,
-}
-obj2 = {
-    'total_width': None,
-    'total_height': None,
-    'crop_width': None,
-    'crop_height': None,
-    'x': None,
-    'y': None,
-}
+image1 = Image()
+image2 = Image()
 
 
 @app.after_request
@@ -54,14 +36,16 @@ def upload():
         a = request.get_json()
 
         if 'phase' in a.keys():
-            image1 = a['phase']
-            obj['image1'] = image1
+            phase_path = a['phase']
+            image1.set_path(phase_path)
+            print(image1.image)
 
         if 'mag' in a.keys():
-            image2 = a['mag']
-            obj['image2'] = image2
+            mag_path = a['mag']
+            image2.set_path(mag_path)
 
-        print(obj)
+
+        # print(obj)
         return request.data
 
 
@@ -71,45 +55,31 @@ def crop():
     if request.method == 'POST':
         a = request.get_json()
         if 'phase' in a.keys():
-            obj1['total_width'] = a['phase']['img_width']
-            obj1['total_height'] = a['phase']['img_height']
-            obj1['crop_width'] = a['phase']['cropped_width']
-            obj1['crop_height'] = a['phase']['cropped_height']
-            obj1['x'] = a['phase']['x']
-            obj1['y'] = a['phase']['y']
+            image1.image_dimensions['total_width'] = a['phase']['img_width']
+            image1.image_dimensions['total_height'] = a['phase']['img_height']
+            image1.image_dimensions['crop_width'] = a['phase']['cropped_width']
+            image1.image_dimensions['crop_height'] = a['phase']['cropped_height']
+            image1.image_dimensions['x'] = a['phase']['x']
+            image1.image_dimensions['y'] = a['phase']['y']
+            image1.calc_dim()
         else:
-            obj2['total_width'] = a['mag']['img_width']
-            obj2['total_height'] = a['mag']['img_height']
-            obj2['crop_width'] = a['mag']['cropped_width']
-            obj2['crop_height'] = a['mag']['cropped_height']
-            obj2['x'] = a['mag']['x']
-            obj2['y'] = a['mag']['y']
+            image2.image_dimensions['total_width'] = a['mag']['img_width']
+            image2.image_dimensions['total_height'] = a['mag']['img_height']
+            image2.image_dimensions['crop_width'] = a['mag']['cropped_width']
+            image2.image_dimensions['crop_height'] = a['mag']['cropped_height']
+            image2.image_dimensions['x'] = a['mag']['x']
+            image2.image_dimensions['y'] = a['mag']['y']
+            image2.calc_dim()
 
-        print(obj1, obj2)
+        print(image1.image_dimensions, image2.image_dimensions)
         out_path = 'src/cat.jpeg'
 
 
-
-        if obj['image2'] == None:
-            phase_img = RGB2Gray(str(obj['image1']))
-            x_start,x_end, y_start, y_end = calc_dim(obj1['x'],obj1['y'], obj1['total_width'],obj1['total_height'], obj1['crop_width'], obj1['crop_height'],len(phase_img))
-            phase_only = mix_with_uniform_mag(phase_img,out_path,x_start,x_end, y_start, y_end)
-            print(phase_only)
-
-        elif obj['image1'] == None:
-            mag_img = RGB2Gray(str(obj['image2']))
-            x_start,x_end, y_start, y_end = calc_dim(obj2['x'],obj2['y'], obj2['total_width'],obj2['total_height'], obj2['crop_width'], obj2['crop_height'],len(mag_img))
-
-            mix_with_uniform_phase(mag_img,out_path,x_start,x_end, y_start, y_end)
-
-        else:
-            phase_img = RGB2Gray(str(obj['image1']))
-            mag_img = RGB2Gray(str(obj['image2']))
-
-            mix_with_uniform_phase(mag_img,out_path,x_start,x_end, y_start, y_end)
-            x1_start,x1_end, y1_start, y1_end = calc_dim(obj1['x'],obj1['y'], obj1['total_width'],obj1['total_height'], obj1['crop_width'], obj1['crop_height'],len(mag_img))
-            x2_start,x2_end, y2_start, y2_end = calc_dim(obj2['x'],obj2['y'], obj2['total_width'],obj2['total_height'], obj2['crop_width'], obj2['crop_height'],len(mag_img))
-            mag_phase_mix(phase_img, mag_img, out_path,x1_start,x1_end, y1_start, y1_end,x2_start,x2_end, y2_start, y2_end)
+        if image2.path == None or (image2.image_dimensions['crop_width'] == None or image2.image_dimensions['crop_width'] == 0) and (image2.image_dimensions['crop_height'] == None  or image2.image_dimensions['crop_width'] == 0):
+            image1.mix_with_uniform_mag(out_path)
+        if image1.path  == None or (image1.image_dimensions['crop_width'] == None or image1.image_dimensions['crop_width'] == 0) and (image1.image_dimensions['crop_height'] == None  or image1.image_dimensions['crop_width'] == 0):
+            image2.mix_with_uniform_phase(out_path)            
+        image1.mag_phase_mix(image2.cropped, out_path)
         return request.data
 
 
