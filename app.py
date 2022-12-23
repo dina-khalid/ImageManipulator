@@ -93,7 +93,8 @@ def crop():
         if obj['image2'] == None:
             phase_img = RGB2Gray(str(obj['image1']))
             x_start,x_end, y_start, y_end = calc_dim(obj1['x'],obj1['y'], obj1['total_width'],obj1['total_height'], obj1['crop_width'], obj1['crop_height'],len(phase_img))
-            mix_with_uniform_mag(phase_img,out_path,x_start,x_end, y_start, y_end)
+            phase_only = mix_with_uniform_mag(phase_img,out_path,x_start,x_end, y_start, y_end)
+            print(phase_only)
 
         elif obj['image1'] == None:
             mag_img = RGB2Gray(str(obj['image2']))
@@ -104,10 +105,11 @@ def crop():
         else:
             phase_img = RGB2Gray(str(obj['image1']))
             mag_img = RGB2Gray(str(obj['image2']))
+
+            mix_with_uniform_phase(mag_img,out_path,x_start,x_end, y_start, y_end)
             x1_start,x1_end, y1_start, y1_end = calc_dim(obj1['x'],obj1['y'], obj1['total_width'],obj1['total_height'], obj1['crop_width'], obj1['crop_height'],len(mag_img))
             x2_start,x2_end, y2_start, y2_end = calc_dim(obj2['x'],obj2['y'], obj2['total_width'],obj2['total_height'], obj2['crop_width'], obj2['crop_height'],len(mag_img))
             mag_phase_mix(phase_img, mag_img, out_path,x1_start,x1_end, y1_start, y1_end,x2_start,x2_end, y2_start, y2_end)
-
         return request.data
 
 

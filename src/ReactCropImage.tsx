@@ -183,12 +183,12 @@ export default function App({imgId,width, height,download,downloadAction}) {
             ref={imgRef}
             alt="Crop me"
             src={imgSrc}
-            
+            style={{backgroundColor:'#0b2b34'}}
             onLoad={onImageLoad}
           />
         </ReactCrop>
       )}
-      <div>
+      {/* <div>
         {!!completedCrop && (
           <canvas
             ref={previewCanvasRef}
@@ -200,7 +200,7 @@ export default function App({imgId,width, height,download,downloadAction}) {
             }}
           />
         )}
-      </div>
+      </div> */}
     </div>
   )
 }
