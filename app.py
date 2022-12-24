@@ -30,6 +30,7 @@ def add_cors_headers(response):
                          'GET, POST, OPTIONS, PUT, DELETE')
     return response
 
+
 @app.route('/process1', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
@@ -38,16 +39,28 @@ def upload():
         if 'phase' in a.keys():
             phase_path = a['phase']
             image1.set_path(phase_path)
-            print(image1.image)
+            image1.image_dimensions = {
+                'total_width': 0,
+                'total_height': 0,
+                'crop_width': 0,
+                'crop_height': 0,
+                'x': 0,
+                'y': 0,
+            }
 
         if 'mag' in a.keys():
             mag_path = a['mag']
             image2.set_path(mag_path)
+            image2.image_dimensions = {
+                'total_width': 0,
+                'total_height': 0,
+                'crop_width': 0,
+                'crop_height': 0,
+                'x': 0,
+                'y': 0,
+            }
 
-
-        # print(obj)
         return request.data
-
 
 
 @app.route('/process2', methods=['GET', 'POST'])
@@ -71,15 +84,14 @@ def crop():
             image2.image_dimensions['y'] = a['mag']['y']
             image2.calc_dim()
 
-        print(image1.image_dimensions, image2.image_dimensions)
         out_path = 'src/cat.jpeg'
-
-
-        if image2.path == None or (image2.image_dimensions['crop_width'] == None or image2.image_dimensions['crop_width'] == 0) and (image2.image_dimensions['crop_height'] == None  or image2.image_dimensions['crop_width'] == 0):
+        if image2.path == None or image2.image_dimensions['crop_width'] == 0 or image2.image_dimensions['crop_height'] == 0:
+            print(image1.image_dimensions, image2.image_dimensions)
             image1.mix_with_uniform_mag(out_path)
-        if image1.path  == None or (image1.image_dimensions['crop_width'] == None or image1.image_dimensions['crop_width'] == 0) and (image1.image_dimensions['crop_height'] == None  or image1.image_dimensions['crop_width'] == 0):
-            image2.mix_with_uniform_phase(out_path)            
-        image1.mag_phase_mix(image2.cropped, out_path)
+        elif image1.path == None or image1.image_dimensions['crop_width'] == 0 or image1.image_dimensions['crop_height'] == 0:
+            image2.mix_with_uniform_phase(out_path)
+        else:
+            image1.mag_phase_mix(image2.cropped, out_path)
         return request.data
 
 
