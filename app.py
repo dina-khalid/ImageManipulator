@@ -1,9 +1,6 @@
 # Import flask and datetime module for showing date and time
 from flask import Flask, request
 import datetime
-import os
-import cv2
-import matplotlib.pyplot as plt
 from image_processing import Image
 
 x = datetime.datetime.now()
@@ -16,8 +13,12 @@ image1 = Image()
 image2 = Image()
 
 
+
 @app.after_request
 def add_cors_headers(response):
+    """
+    Allow Cors for the frontend
+    """
     r = request.referrer[:-1]
 
     response.headers.add('Access-Control-Allow-Origin', r)
@@ -33,6 +34,9 @@ def add_cors_headers(response):
 
 @app.route('/process1', methods=['GET', 'POST'])
 def upload():
+    """
+    Initiate image attriputes when upload
+    """
     if request.method == 'POST':
         a = request.get_json()
 
@@ -65,6 +69,9 @@ def upload():
 
 @app.route('/process2', methods=['GET', 'POST'])
 def crop():
+    """
+    Mix the images according to the selected area
+    """
     if request.method == 'POST':
         a = request.get_json()
         if 'phase' in a.keys():
@@ -91,7 +98,7 @@ def crop():
         elif image1.path == None or image1.image_dimensions['crop_width'] == 0 or image1.image_dimensions['crop_height'] == 0:
             image2.mix_with_uniform_phase(out_path)
         else:
-            image1.mag_phase_mix(image2.cropped, out_path)
+            image1.mag_phase_mix(image2.cropped_mag, out_path)
         return request.data
 
 
