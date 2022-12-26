@@ -69,6 +69,7 @@ class Image():
         if path is not None:
             self.image = self.RGB2Gray()
             fft2 = np.fft.fft2(self.image)
+            fft2 = np.fft.fftshift(fft2)
             self.phase = np.exp(1j * np.angle(fft2))
             self.mag = np.abs(fft2)
 
@@ -91,6 +92,7 @@ class Image():
         self.path = path
         self.image = self.RGB2Gray()
         fft2 = np.fft.fft2(self.image)
+        fft2 = np.fft.fftshift(fft2)
         self.phase = np.exp(1j * np.angle(fft2))
         self.mag = np.abs(fft2)
 
@@ -115,7 +117,7 @@ class Image():
         self.y_end = ((self.image_dimensions['y']+self.image_dimensions['crop_height']
                        )/self.image_dimensions['total_height'])*self.dim
         self.cropped_phase = self.phase.copy()
-        self.crop(self.cropped_phase, 0)
+        self.crop(self.cropped_phase, 1+0j)
         self.cropped_mag = self.mag.copy()
         self.crop(self.cropped_mag, 1)
 
@@ -149,8 +151,8 @@ class Image():
             path to save the result
         '''
         combined = np.multiply(mag_img, self.cropped_phase)
-        combined_img = np.real(np.fft.ifft2(combined))
-        return cv2.imwrite(out_path, combined_img*100)
+        combined_img = np.real(np.fft.ifft2(np.fft.ifftshift(combined)))
+        return cv2.imwrite(out_path, combined_img)
 
         
 
@@ -167,7 +169,7 @@ class Image():
         '''
         phase_img = self.cropped_phase
         combined = np.multiply(np.abs(np.ones(phase_img.shape)),phase_img)
-        phase_only = np.real(np.fft.ifft2(combined)*10000)
+        phase_only = np.real(np.fft.ifft2(np.fft.ifftshift(combined))*10000)
         cv2.imwrite(out_path, phase_only)
 
 
@@ -184,8 +186,8 @@ class Image():
             path to save the result
         '''
         combined = np.multiply(self.cropped_mag, np.exp(1j * np.angle(np.zeros(self.cropped_mag.shape))))
-        mag_only = np.real(np.fft.ifft2(combined))
-        return cv2.imwrite(out_path, mag_only*10)
+        mag_only = np.real(np.fft.ifft2(np.fft.ifftshift(combined)))
+        return cv2.imwrite(out_path, mag_only)
 
 
 

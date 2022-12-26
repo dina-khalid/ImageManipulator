@@ -2,6 +2,7 @@
 from flask import Flask, request
 import datetime
 from image_processing import Image
+import numpy as np
 
 x = datetime.datetime.now()
 
@@ -90,7 +91,7 @@ def crop():
             image2.image_dimensions['x'] = a['mag']['x']
             image2.image_dimensions['y'] = a['mag']['y']
             image2.calc_dim()
-
+        print(np.exp(1j * np.angle(0)))
         out_path = 'src/cat.jpeg'
         if image2.path == None or image2.image_dimensions['crop_width'] == 0 or image2.image_dimensions['crop_height'] == 0:
             print(image1.image_dimensions, image2.image_dimensions)
