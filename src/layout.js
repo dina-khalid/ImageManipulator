@@ -3,13 +3,6 @@ import "./App.css";
 import { StyleSheet, View } from "react-native";
 import Crop from "./Crop";
 import ReactCropImage from "./ReactCropImage";
-import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import CropOutlinedIcon from "@mui/icons-material/CropOutlined";
-import FlipCameraAndroidOutlinedIcon from "@mui/icons-material/FlipCameraAndroidOutlined";
-import { Button } from "@mui/material";
-import { magValue } from "./App";
-import { saveAs } from "file-saver";
 import myImage from "../src/cat.jpeg";
 import axios from "axios";
 const styles = StyleSheet.create({

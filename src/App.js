@@ -1,6 +1,6 @@
 // App.js
 // Kindacode.com
-import { useState } from "react";
+import React, { useState } from 'react';
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
