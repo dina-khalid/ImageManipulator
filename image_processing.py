@@ -116,10 +116,7 @@ class Image():
             self.image_dimensions['y']/self.image_dimensions['total_height'])*self.dim
         self.y_end = ((self.image_dimensions['y']+self.image_dimensions['crop_height']
                        )/self.image_dimensions['total_height'])*self.dim
-        self.cropped_phase = self.phase.copy()
-        self.crop(self.cropped_phase, 1+0j)
-        self.cropped_mag = self.mag.copy()
-        self.crop(self.cropped_mag, 1)
+        self.crop(1)
 
 
 
@@ -191,20 +188,23 @@ class Image():
 
 
 
-    def crop(self, image, fill_value):
+    def crop(self,  fill_value):
         """
         Fill values of the cropped part with uniform value
 
         Parameters
         ----------
-        image : 2D array
-            Array to be cropped
         fill_value : float
             Value to be filled in cropped area
         """
+        self.cropped_phase = self.phase.copy()
+        self.cropped_mag = self.mag.copy()
         for i in range(self.dim):
             for j in range(self.dim):
                 if (self.x_start < j < self.x_end) and (self.y_start < i < self.y_end):
                     pass
                 else:
-                    image[i][j] = fill_value
+                    self.cropped_phase[i][j] = fill_value
+                    self.cropped_mag[i][j] = fill_value
+
+
