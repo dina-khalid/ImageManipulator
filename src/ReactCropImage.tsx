@@ -1,5 +1,4 @@
 import React, { useState, useRef} from 'react'
-import { generateDownload } from "./utils/cropImage";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import axios from "axios";
 import ReactCrop, {
@@ -43,36 +42,49 @@ export default function App({imgId,width, height,download,downloadAction}) {
   const [imgSrc, setImgSrc] = useState('')
   const previewCanvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
+  const [fixedRef,setFixedRef] =useState(false) 
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
+  const [imgSrc2, setImgSrc2] = useState('')
+  const previewCanvasRef2 = useRef<HTMLCanvasElement>(null)
+  const imgRef2 = useRef<HTMLImageElement>(null)
+  const [crop2, setCrop2] = useState<Crop>()
+  const [completedCrop2, setCompletedCrop2] = useState<PixelCrop>()
+
 
   const [aspect, setAspect] = useState<number | undefined>(undefined)
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
-      console.log()
-      if(imgId=='phase'){
       axios.post("http://127.0.0.1:5000//process1",{
       phase:e.target.files[0].name
     }).then((res)=>{
       console.log(res)
     }).catch((error) => {
       console.log(error)
-    })}
-    else{
-      axios.post("http://127.0.0.1:5000//process1",{
-      mag:e.target.files[0].name
-    }).then((res)=>{
-      console.log(res)
-    }).catch((error) => {
-      console.log(error)
     })
-    }
     
       setCrop(undefined) // Makes crop preview update between images.
       const reader = new FileReader()
       reader.addEventListener('load', () =>
         setImgSrc(reader.result?.toString() || ''),
+      )
+      reader.readAsDataURL(e.target.files[0])
+    }
+  }
+  function onSelectFile2(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && e.target.files.length > 0) {
+      axios.post("http://127.0.0.1:5000//process1",{
+        mag:e.target.files[0].name
+      }).then((res)=>{
+        console.log(res)
+      }).catch((error) => {
+        console.log(error)
+      })
+      setCrop2(undefined) // Makes crop preview update between images.
+      const reader = new FileReader()
+      reader.addEventListener('load', () =>
+        setImgSrc2(reader.result?.toString() || ''),
       )
       reader.readAsDataURL(e.target.files[0])
     }
@@ -86,12 +98,20 @@ export default function App({imgId,width, height,download,downloadAction}) {
       setCrop(centerAspectCrop(width, height, aspect))
     }
   }
+  function onImageLoad2(e: React.SyntheticEvent<HTMLImageElement>) {
+    
+    
+    if (aspect) {
+      const { width, height } = e.currentTarget
+      setCrop2(centerAspectCrop(width, height, aspect))
+    }
+  }
 
   useDebounceEffect(
     async () => {
-      console.log(imgRef.current?.width,imgRef.current?.height)
+
       console.log(completedCrop?.width,completedCrop?.height)
-      console.log(completedCrop?.x,completedCrop?.y)
+      console.log(completedCrop2?.width,completedCrop2?.height)
       const obj={
         img_width:imgRef.current?.width,
         img_height:imgRef.current?.height,
@@ -100,19 +120,37 @@ export default function App({imgId,width, height,download,downloadAction}) {
         x:completedCrop?.x,
         y:completedCrop?.y
       }
-      if(imgId=='phase'){
+      let obj2={
+        img_width:imgRef2.current?.width,
+        img_height:imgRef2.current?.height,
+        cropped_width:completedCrop2?.width,
+        cropped_height:completedCrop2?.height,
+        x:completedCrop2?.x,
+        y:completedCrop2?.y
+      }
+      if(fixedRef)
+      {
+        obj2={
+          img_width:imgRef.current?.width,
+          img_height:imgRef.current?.height,
+          cropped_width:completedCrop?.width,
+          cropped_height:completedCrop?.height,
+          x:completedCrop?.x,
+          y:completedCrop?.y
+        }
+      }
+
       axios.post("http://127.0.0.1:5000//process2",{
         phase:obj
       }).then((res)=>{
         console.log(res)
-      })}
-      else
-      {
+      })
+
       axios.post("http://127.0.0.1:5000//process2",{
-        mag:obj
+        mag:obj2
       }).then((res)=>{
         console.log(res)
-      })}
+      })
       if (
         completedCrop?.width &&
         completedCrop?.height &&
@@ -125,37 +163,26 @@ export default function App({imgId,width, height,download,downloadAction}) {
           previewCanvasRef.current,
           completedCrop,
         )
+        
+      }
+      if (
+        completedCrop2?.width &&
+        completedCrop2?.height &&
+        imgRef2.current &&
+        previewCanvasRef2.current
+      ) {
+        canvasPreview(
+          imgRef2.current,
+          previewCanvasRef2.current,
+          completedCrop2,
+        )
+        
       }
     },
     100,
-    [completedCrop],
+    [completedCrop,completedCrop2]
   )
 
-   async function onDownload(){
-    
-    if(completedCrop != undefined){ 
-
-      var xratio=(imgRef?.current?.naturalWidth)
-      let x=(imgRef?.current?.width)
-      //@ts-ignore
-      let rex=xratio/x
-      let yratio=(imgRef?.current?.naturalHeight)
-      let y=(imgRef?.current?.height)
-      //@ts-ignore
-      let rey=yratio/y
-      let crp={
-      width:previewCanvasRef?.current?.width,
-      height:previewCanvasRef?.current?.height,
-      x:completedCrop?.x*rex,
-      y:completedCrop?.y*rey
-    }
-    // console.log(crp)
-    generateDownload(imgRef.current?.src, crp);
-  }}
-  if(download){
-    onDownload();
-    download = false;
-  } 
   return (
     <div className="App">
       <div className="Crop-Controls">
@@ -186,21 +213,53 @@ export default function App({imgId,width, height,download,downloadAction}) {
             style={{backgroundColor:'#0b2b34'}}
             onLoad={onImageLoad}
           />
+          
         </ReactCrop>
       )}
-      {/* <div>
-        {!!completedCrop && (
-          <canvas
-            ref={previewCanvasRef}
-            style={{
-              border: '1px solid black',
-              objectFit: 'contain',
-              width: completedCrop.width,
-              height: completedCrop.height,
-            }}
+      <div className="Crop-Controls">
+      <label htmlFor={"img"}><FileUploadOutlinedIcon style={{color:'white', fontSize: '30px'}}/></label>
+          <input
+            id={'img'}
+            style={{display:'none'}} type="file" accept="image/*" onChange={onSelectFile2} />
+  
+      
+      </div>
+      {!!imgSrc2 && (
+        <ReactCrop
+          crop={fixedRef?crop:crop2}
+          onChange={(_, percentCrop) => {
+          if(fixedRef)
+            setCrop(percentCrop)
+          else
+            {setCrop2(percentCrop)
+
+            }}}
+          onComplete={(c) => {
+            if(fixedRef)
+            setCompletedCrop(c)
+            else{
+            setCompletedCrop2(c)
+
+          }//
+          //console.log(completedCrop?.width,completedCrop?.height) 
+          }}
+        >
+          <img
+            ref={imgRef2}
+            alt="Crop me"
+            src={imgSrc2}
+            style={{backgroundColor:'#0b2b34'}}
+            onLoad={onImageLoad2}
           />
-        )}
-      </div> */}
+          
+        </ReactCrop>
+      )}
+      <button onClick={()=>{
+        if(fixedRef)
+        setFixedRef(false)
+        else
+        setFixedRef(true)
+      }}>Fixed Crop</button>
     </div>
   )
 }

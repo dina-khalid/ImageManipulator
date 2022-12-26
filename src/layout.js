@@ -99,9 +99,7 @@ export default function HeaderFooter() {
     <>
       <View style={[styles.margin]}></View>
       <View style={[styles.centre]}>
-        <View style={styles.bar}>
-      image mixer
-       </View>
+        <View style={styles.bar}>image mixer</View>
       </View>
 
       <View style={[styles.margin]}></View>
@@ -128,7 +126,7 @@ export default function HeaderFooter() {
             <View style={[styles.output_box]}>
               <img src={myImage} alt="output" />
             </View>
-            <View style={[styles.input_box]}>
+            {/* <View style={[styles.input_box]}>
               <ReactCropImage
                 imgId={"phase"}
                 download={downlaod}
@@ -136,7 +134,7 @@ export default function HeaderFooter() {
                 height={height}
                 downloadAction={downloadAction}
               />
-            </View>
+            </View> */}
           </View>
         </View>
       </View>
