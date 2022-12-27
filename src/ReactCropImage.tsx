@@ -9,6 +9,9 @@ import ReactCrop, {
 } from 'react-image-crop'
 import { canvasPreview } from './CanvasPreview'
 import { useDebounceEffect } from './useDebounceEffect'
+import myImage from "../src/cat.jpeg";
+import myPhase from "../src/phase.jpeg";
+import myMag from "../src/mag.jpeg";
 
 import 'react-image-crop/dist/ReactCrop.css'
 
@@ -34,7 +37,7 @@ function centerAspectCrop(
   )
 }
 //@ts-ignore
-export default function App({imgId,width, height,download,downloadAction}) {
+export default function App({imgId,width, height,download,downloadAction, fixedRef, swapped}) {
 
 //    refDownload?.current.actions.onCkick()
  
@@ -42,7 +45,7 @@ export default function App({imgId,width, height,download,downloadAction}) {
   const [imgSrc, setImgSrc] = useState('')
   const previewCanvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
-  const [fixedRef,setFixedRef] =useState(false) 
+  // const [fixedRef,setFixedRef] =useState(false) 
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
   const [imgSrc2, setImgSrc2] = useState('')
@@ -112,7 +115,7 @@ export default function App({imgId,width, height,download,downloadAction}) {
 
       console.log(completedCrop?.width,completedCrop?.height)
       console.log(completedCrop2?.width,completedCrop2?.height)
-      const obj={
+      let obj={
         img_width:imgRef.current?.width,
         img_height:imgRef.current?.height,
         cropped_width:completedCrop?.width,
@@ -140,6 +143,12 @@ export default function App({imgId,width, height,download,downloadAction}) {
         }
       }
 
+      console.log(swapped)
+      if(swapped){
+        let temp = obj
+        obj= obj2
+        obj2=temp
+      }
       axios.post("http://127.0.0.1:5000//process2",{
         phase:obj
       }).then((res)=>{
@@ -184,82 +193,113 @@ export default function App({imgId,width, height,download,downloadAction}) {
   )
 
   return (
+
     <div className="App">
-      <div className="Crop-Controls">
-      <label htmlFor={imgId}><FileUploadOutlinedIcon style={{color:'white', fontSize: '30px'}}/></label>
-          <input
-            id={imgId}
-            style={{display:'none'}} type="file" accept="image/*" onChange={onSelectFile} />
-  
-      
-      </div>
-      {!!imgSrc && (
-        <ReactCrop
-  
-          crop={crop}
-          onChange={(_, percentCrop) => setCrop(percentCrop)}
-          onComplete={(c) => {
-            
-            setCompletedCrop(c)
-            
-            //
-          //console.log(completedCrop?.width,completedCrop?.height) 
-          }}
-        >
-          <img
-            ref={imgRef}
-            alt="Crop me"
-            src={imgSrc}
-            style={{backgroundColor:'#0b2b34'}}
-            onLoad={onImageLoad}
-          />
-          
-        </ReactCrop>
-      )}
-      <div className="Crop-Controls">
-      <label htmlFor={"img"}><FileUploadOutlinedIcon style={{color:'white', fontSize: '30px'}}/></label>
-          <input
-            id={'img'}
-            style={{display:'none'}} type="file" accept="image/*" onChange={onSelectFile2} />
-  
-      
-      </div>
-      {!!imgSrc2 && (
-        <ReactCrop
-          crop={fixedRef?crop:crop2}
-          onChange={(_, percentCrop) => {
-          if(fixedRef)
-            setCrop(percentCrop)
-          else
-            {setCrop2(percentCrop)
+    <div style={{
+      display: 'flex',
+      justifyContent: "space-between",
+      marginBottom: 0,
+    }}>
+      <div style={{
+         display: "block",
+         marginLeft: "auto",
+         marginRight: "auto",
+         width: "30%",
+         borderRadius: "7px",
+         backgroundColor: "#09232b",
+      }}>
+        <div className="Crop-Controls" style={{textAlign: "center"}}>
+        <label htmlFor={imgId}><FileUploadOutlinedIcon style={{color:'white', fontSize: '30px'}}/></label>
+            <input
+              id={imgId}
+              style={{display:'none'}} type="file" accept="image/*" onChange={onSelectFile} />
+        </div>
 
-            }}}
-          onComplete={(c) => {
+        {!!imgSrc && (
+          <ReactCrop
+    
+            crop={crop}
+            onChange={(_, percentCrop) => setCrop(percentCrop)}
+            onComplete={(c) => {
+              
+              setCompletedCrop(c)
+              
+              //
+            //console.log(completedCrop?.width,completedCrop?.height) 
+            }}
+          >
+            <img
+              ref={imgRef}
+              alt="Crop me"
+              src={imgSrc}
+              style={{backgroundColor:'#0b2b34'}}
+              onLoad={onImageLoad}
+            />
+            
+          </ReactCrop>
+        )}
+      </div>
+      <div style={{
+        display: "block",
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "30%",
+        minHeight: "400px",
+        borderRadius: "7px",
+        // backgroundColor: "#09232b",
+      }}>
+        <img src={myImage} alt="output" />
+        <img src={myPhase} alt="Phase"/>
+        <img src={myMag} alt="Phase"/>
+      </div>
+      <div style={{
+         display: "block",
+         marginLeft: "auto",
+         marginRight: "auto",
+         width: "30%",
+         borderRadius: "7px",
+         backgroundColor: "#09232b",
+      }}>
+        <div className="Crop-Controls" style={{textAlign: "center"}}>
+        <label htmlFor={"img"}><FileUploadOutlinedIcon style={{color:'white', fontSize: '30px'}}/></label>
+            <input
+              id={'img'}
+              style={{display:'none'}} type="file" accept="image/*" onChange={onSelectFile2} />
+    
+        
+        </div>
+        {!!imgSrc2 && (
+          <ReactCrop
+            crop={fixedRef?crop:crop2}
+            onChange={(_, percentCrop) => {
             if(fixedRef)
-            setCompletedCrop(c)
-            else{
-            setCompletedCrop2(c)
+              setCrop(percentCrop)
+            else
+              {setCrop2(percentCrop)
 
-          }//
-          //console.log(completedCrop?.width,completedCrop?.height) 
-          }}
-        >
-          <img
-            ref={imgRef2}
-            alt="Crop me"
-            src={imgSrc2}
-            style={{backgroundColor:'#0b2b34'}}
-            onLoad={onImageLoad2}
-          />
-          
-        </ReactCrop>
-      )}
-      <button onClick={()=>{
-        if(fixedRef)
-        setFixedRef(false)
-        else
-        setFixedRef(true)
-      }}>Fixed Crop</button>
+              }}}
+            onComplete={(c) => {
+              if(fixedRef)
+              setCompletedCrop(c)
+              else{
+              setCompletedCrop2(c)
+
+            }//
+            //console.log(completedCrop?.width,completedCrop?.height) 
+            }}
+          >
+            <img
+              ref={imgRef2}
+              alt="Crop me"
+              src={imgSrc2}
+              style={{backgroundColor:'#0b2b34'}}
+              onLoad={onImageLoad2}
+            />
+            
+          </ReactCrop>
+        )}
+      </div>
+    </div>
     </div>
   )
 }
