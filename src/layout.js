@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
 import { StyleSheet, View } from "react-native";
 import Crop from "./Crop";
@@ -110,7 +110,9 @@ export default function HeaderFooter() {
   });
   const [fixedRef,setFixedRef] =useState(false) 
   const [swapped,setSwapped] =useState(false) 
-  
+  useEffect(() => {
+    document.title = "Image Mixer";
+  }, []);
 
   return (
     <>
@@ -143,9 +145,9 @@ export default function HeaderFooter() {
       <View style={[styles.margin]}></View>
       <View style={[styles.centre]}>
         <View style={[styles.container]}>
-          <View style={[styles.address]}>{swapped? 'PHASE INPUT': 'MAGNITUDE INPUT'}</View>
-          <View style={[styles.address]}>THE RESULT</View>
           <View style={[styles.address]}>{swapped? 'MAGNITUDE INPUT': 'PHASE INPUT'}</View>
+          <View style={[styles.address]}>THE RESULT</View>
+          <View style={[styles.address]}>{swapped? 'PHASE INPUT': 'MAGNITUDE INPUT'}</View>
         </View>
       </View>
               <ReactCropImage

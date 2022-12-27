@@ -93,11 +93,14 @@ def crop():
             image2.calc_dim()
         print(np.exp(1j * np.angle(0)))
         out_path = 'src/cat.jpeg'
-        phase_path='src/phase.jpeg'
-        mag_path='src/mag.jpeg'
-        
-        image1.mix_with_uniform_mag(mag_path)
-        image2.mix_with_uniform_phase(phase_path)
+        phase_path1='src/phase1.jpeg'
+        mag_path1='src/mag1.jpeg'
+        phase_path2='src/phase2.jpeg'
+        mag_path2='src/mag2.jpeg'        
+        image1.mix_with_uniform_mag(mag_path1)
+        image1.mix_with_uniform_phase(phase_path1)
+        image2.mix_with_uniform_mag(mag_path2)
+        image2.mix_with_uniform_phase(phase_path2)
         if image2.path == None or image2.image_dimensions['crop_width'] == 0 or image2.image_dimensions['crop_height'] == 0:
             print(image1.image_dimensions, image2.image_dimensions)
             image1.mix_with_uniform_mag(out_path)

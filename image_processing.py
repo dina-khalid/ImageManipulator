@@ -166,7 +166,7 @@ class Image():
         '''
         phase_img = self.cropped_phase
         combined = np.multiply(np.abs(np.ones(phase_img.shape)),phase_img)
-        phase_only = np.real(np.fft.ifft2(np.fft.ifftshift(combined))*10000)
+        phase_only = np.real(np.fft.ifft2(np.fft.ifftshift(combined))*100 )
         cv2.imwrite(out_path, phase_only)
 
 

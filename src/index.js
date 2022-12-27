@@ -4,4 +4,7 @@ import App from "./App";
 import HorizontalStack from "./layout.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<HorizontalStack />);
+root.render(
+
+<HorizontalStack />
+);
