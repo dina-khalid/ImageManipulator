@@ -10,10 +10,8 @@ import ReactCrop, {
 import { canvasPreview } from './CanvasPreview'
 import { useDebounceEffect } from './useDebounceEffect'
 import myImage from "../src/cat.jpeg";
-import myPhase1 from "../src/phase1.jpeg";
-import myMag1 from "../src/mag1.jpeg";
-import myPhase2 from "../src/phase2.jpeg";
-import myMag2 from "../src/mag2.jpeg";
+import myPhase from "../src/phase.jpeg";
+import myMag from "../src/mag.jpeg";
 
 import 'react-image-crop/dist/ReactCrop.css'
 
@@ -145,23 +143,23 @@ export default function App({imgId,width, height,download,downloadAction, fixedR
         }
       }
 
-      console.log(swapped)
-      if(swapped){
-        let temp = obj
-        obj= obj2
-        obj2=temp
-      }
-      axios.post("http://127.0.0.1:5000//process2",{
-        phase:obj
-      }).then((res)=>{
-        console.log(res)
-      })
+          axios.post("http://127.0.0.1:5000//process2",{
+          phase:obj,
+          swap:swapped
+        }).then((res)=>{
+          console.log(res)
+        })
+  
+        axios.post("http://127.0.0.1:5000//process2",{
+          mag:obj2,
+          swap:swapped
+        }).then((res)=>{
+          console.log(res)
+        })
+        
+      
 
-      axios.post("http://127.0.0.1:5000//process2",{
-        mag:obj2
-      }).then((res)=>{
-        console.log(res)
-      })
+    
       if (
         completedCrop?.width &&
         completedCrop?.height &&
@@ -203,9 +201,7 @@ export default function App({imgId,width, height,download,downloadAction, fixedR
       marginBottom: 0,
     }}>
       <div style={{
-         flexDirection:"column",
-         display: "flex",
-         justifyContent:"center",
+         display: "block",
          marginLeft: "auto",
          marginRight: "auto",
          width: "30%",
@@ -221,7 +217,7 @@ export default function App({imgId,width, height,download,downloadAction, fixedR
 
         {!!imgSrc && (
           <ReactCrop
-
+    
             crop={crop}
             onChange={(_, percentCrop) => setCrop(percentCrop)}
             onComplete={(c) => {
@@ -236,57 +232,29 @@ export default function App({imgId,width, height,download,downloadAction, fixedR
               ref={imgRef}
               alt="Crop me"
               src={imgSrc}
-              style={{
-                maxWidth:"300px" ,
-                maxHeight:"300px",
-                backgroundColor:'#0b2b34',
-                display:' block',
-                marginLeft: 'auto',
-                marginRight: 'auto'}}
+              style={{backgroundColor:'#0b2b34'}}
               onLoad={onImageLoad}
             />
             
           </ReactCrop>
         )}
-        <img
-         style={{
-          maxWidth:"40%" ,
-          maxHeight:"40%",
-          display:' block',
-          marginLeft: 'auto',
-          marginRight: 'auto'}}
-         src={myMag1} 
-         alt="magnitude"/>
-         <img
-         style={{
-          maxWidth:"40%" ,
-          maxHeight:"40%",
-          display:' block',
-          marginLeft: 'auto',
-          marginRight: 'auto'}}
-         src={myPhase1} 
-         alt="magnitude"/>
-
       </div>
       <div style={{
-        flexDirection:"column",
-        display: "flex",
-        justifyContent:"center",
+        display: "block",
         marginLeft: "auto",
         marginRight: "auto",
         width: "30%",
+        minHeight: "400px",
         borderRadius: "7px",
-        backgroundColor: "#09232b",
-     }}>
-        <img
-         src={myImage} 
-         alt="output" />
+        // backgroundColor: "#09232b",
+      }}>
+        <img src={myImage} alt="output" />
       </div>
       <div style={{
          display: "block",
          marginLeft: "auto",
          marginRight: "auto",
-         width: "350px",
+         width: "30%",
          borderRadius: "7px",
          backgroundColor: "#09232b",
       }}>
@@ -322,41 +290,15 @@ export default function App({imgId,width, height,download,downloadAction, fixedR
               ref={imgRef2}
               alt="Crop me"
               src={imgSrc2}
-              style={{
-                display:' block',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                maxWidth:"300px" ,
-                maxHeight:"300px",
-                backgroundColor:'#0b2b34',
-                }}
+              style={{backgroundColor:'#0b2b34'}}
               onLoad={onImageLoad2}
             />
             
           </ReactCrop>
-          
-        )} 
-        <img
-         style={{
-          maxWidth:"40%" ,
-          maxHeight:"40%",
-          display:' block',
-          marginLeft: 'auto',
-          marginRight: 'auto'}}
-         src={myMag2} 
-         alt="magnitude"/>
-         <img
-         style={{
-          maxWidth:"40%" ,
-          maxHeight:"40%",
-          display:' block',
-          marginLeft: 'auto',
-          marginRight: 'auto'}}
-         src={myPhase2} 
-         alt="magnitude"/>
-
+        )}
       </div>
     </div>
     </div>
   )
 }
+

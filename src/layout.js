@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import "./App.css";
 import { StyleSheet, View } from "react-native";
 import Crop from "./Crop";
-import CropOutlinedIcon from '@mui/icons-material/CropOutlined';
+import CropOutlinedIcon from "@mui/icons-material/CropOutlined";
 import { Button, ThemeProvider } from "@mui/material";
 import ReactCropImage from "./ReactCropImage";
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
 import myImage from "../src/cat.jpeg";
 import axios from "axios";
 const styles = StyleSheet.create({
@@ -100,19 +100,16 @@ export default function HeaderFooter() {
     palette: {
       primary: {
         // Purple and green play nicely together.
-        main: '#0f323d',
+        main: "#0f323d",
       },
       secondary: {
         // This is green.A700 as hex.
-        main: '#09232b',
+        main: "#09232b",
       },
     },
   });
-  const [fixedRef,setFixedRef] =useState(false) 
-  const [swapped,setSwapped] =useState(false) 
-  useEffect(() => {
-    document.title = "Image Mixer";
-  }, []);
+  const [fixedRef, setFixedRef] = useState(false);
+  const [swapped, setSwapped] = useState(false);
 
   return (
     <>
@@ -120,45 +117,51 @@ export default function HeaderFooter() {
       <View style={[styles.centre]}>
         <View style={styles.bar}>
           <ThemeProvider theme={theme}>
-            <Button  
-            variant="contained"
-            color={fixedRef ? "primary" : "secondary"}
+            <Button
+              variant="contained"
+              color={fixedRef ? "primary" : "secondary"}
+              style={styles.icon}
+              startIcon={<CropOutlinedIcon />}
+              onClick={() => {
+                setFixedRef(!fixedRef);
+              }}
+            >
+              fixed Crop
+            </Button>
+          </ThemeProvider>
+          <Button
             style={styles.icon}
             startIcon={<CropOutlinedIcon />}
-            onClick={()=>{
-              setFixedRef(!fixedRef)
-            }}>
-          fixed Crop
+            onClick={() => {
+              setSwapped(!swapped);
+            }}
+          >
+            Swap inputs
           </Button>
-        </ThemeProvider>
-        <Button  
-          style={styles.icon}
-          startIcon={<CropOutlinedIcon />}
-          onClick={()=>{
-            setSwapped(!swapped)
-           }}>
-         Swap inputs
-        </Button>
         </View>
       </View>
 
       <View style={[styles.margin]}></View>
       <View style={[styles.centre]}>
         <View style={[styles.container]}>
-          <View style={[styles.address]}>{swapped? 'MAGNITUDE INPUT': 'PHASE INPUT'}</View>
+          <View style={[styles.address]}>
+            {swapped ? "MAGNITUDE INPUT" : "PHASE INPUT"}
+          </View>
           <View style={[styles.address]}>THE RESULT</View>
-          <View style={[styles.address]}>{swapped? 'PHASE INPUT': 'MAGNITUDE INPUT'}</View>
+          <View style={[styles.address]}>
+            {swapped ? "PHASE INPUT" : "MAGNITUDE INPUT"}
+          </View>
         </View>
       </View>
-              <ReactCropImage
-                imgId={"mag"}
-                download={downlaod}
-                width={width}
-                height={height}
-                downloadAction={downloadAction}
-                fixedRef={fixedRef}
-                swapped={swapped}
-              />
-      </>
+      <ReactCropImage
+        imgId={"mag"}
+        download={downlaod}
+        width={width}
+        height={height}
+        downloadAction={downloadAction}
+        fixedRef={fixedRef}
+        swapped={swapped}
+      />
+    </>
   );
 }
