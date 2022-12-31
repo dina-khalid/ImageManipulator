@@ -66,16 +66,20 @@ class Image():
             'x': None,
             'y': None,
         }
+        self.image = None
+        self.dim= None
+        self.x_start=None
+        self.x_end=None
+        self.y_start=None
+        self.y_end= None
+        self.cropped_phase =None
+        self.cropped_mag=None
         if path is not None:
             self.image = self.RGB2Gray()
             fft2 = np.fft.fft2(self.image)
             fft2 = np.fft.fftshift(fft2)
             self.phase = np.exp(1j * np.angle(fft2))
             self.mag = np.abs(fft2)
-
-        else:
-            self.image = None
-
 
 
     def set_path(self, path):
@@ -90,35 +94,12 @@ class Image():
             the path of the image   
         """
         self.path = path
-        self.image = self.RGB2Gray()
+        
+    def image_fft(self):
         fft2 = np.fft.fft2(self.image)
         fft2 = np.fft.fftshift(fft2)
         self.phase = np.exp(1j * np.angle(fft2))
         self.mag = np.abs(fft2)
-
-
-
-    def calc_dim(self):
-        '''
-        Calculate and set the dimentions of the image
-
-        Parameters
-        ----------
-        self : Image
-            Object of the class
-        '''
-        self.dim = len(self.image)
-        self.x_start = (
-            self.image_dimensions['x']/self.image_dimensions['total_width'])*self.dim
-        self.x_end = ((self.image_dimensions['x']+self.image_dimensions['crop_width']
-                       )/self.image_dimensions['total_width'])*self.dim
-        self.y_start = (
-            self.image_dimensions['y']/self.image_dimensions['total_height'])*self.dim
-        self.y_end = ((self.image_dimensions['y']+self.image_dimensions['crop_height']
-                       )/self.image_dimensions['total_height'])*self.dim
-        self.crop(1)
-
-
 
     def RGB2Gray(self):
         '''
@@ -130,81 +111,13 @@ class Image():
         '''
         image = cv2.imread(self.path, cv2.IMREAD_UNCHANGED)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        return image
+        self.image= image
 
-
-
-    def mag_phase_mix(self, mag_img, out_path):
-        '''
-        mix the phase of the image with the magnitde of another image
-
-        Parameters
-        ----------
-        self : Image
-            Object of the class
-        mag_img : 2D Array
-            cropped_mag of another Image object
-        out_path : str
-            path to save the result
-        '''
-        combined = np.multiply(mag_img, self.cropped_phase)
-        combined_img = np.real(np.fft.ifft2(np.fft.ifftshift(combined)))
-        return cv2.imwrite(out_path, combined_img)
-
-        
-
-    def mix_with_uniform_mag(self, out_path):
-        '''
-        mix the phase of the image with uniform magnitde
-
-        Parameters
-        ----------
-        self : Image
-            Object of the class
-        out_path : str
-            path to save the result
-        '''
-        phase_img = self.cropped_phase
-        combined = np.multiply(np.abs(np.ones(phase_img.shape)),phase_img)
-        phase_only = np.real(np.fft.ifft2(np.fft.ifftshift(combined))*100 )
-        cv2.imwrite(out_path, phase_only)
-
-
-
-    def mix_with_uniform_phase(self, out_path):
-        '''
-        mix the magnitude of the image with the phase of another image
-
-        Parameters
-        ----------
-        self : Image
-            Object of the class
-        out_path : str
-            path to save the result
-        '''
-        combined = np.multiply(self.cropped_mag, np.exp(1j * np.angle(np.zeros(self.cropped_mag.shape))))
-        mag_only = np.real(np.fft.ifft2(np.fft.ifftshift(combined)))
-        return cv2.imwrite(out_path, mag_only)
-
-
-
-    def crop(self,  fill_value):
-        """
-        Fill values of the cropped part with uniform value
-
-        Parameters
-        ----------
-        fill_value : float
-            Value to be filled in cropped area
-        """
-        self.cropped_phase = self.phase.copy()
-        self.cropped_mag = self.mag.copy()
-        for i in range(self.dim):
-            for j in range(self.dim):
-                if (self.x_start < j < self.x_end) and (self.y_start < i < self.y_end):
-                    pass
-                else:
-                    self.cropped_phase[i][j] = fill_value
-                    self.cropped_mag[i][j] = fill_value
-
+    def get_length(self):
+        return len(self.image)
+    
+    @staticmethod
+    def  image_write(out_path , image):
+        return cv2.imwrite(out_path,image)
+    
 

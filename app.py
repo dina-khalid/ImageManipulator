@@ -2,6 +2,7 @@
 from flask import Flask, request
 import datetime
 from image_processing import Image
+from imageMixing import ImageMixing
 import numpy as np
 
 x = datetime.datetime.now()
@@ -12,6 +13,7 @@ app = Flask(__name__)
 # Route for seeing a data
 image1 = Image()
 image2 = Image()
+imageMixer = ImageMixing(image1=image1 , image2=image2)
 
 
 
@@ -44,6 +46,8 @@ def upload():
         if 'phase' in a.keys():
             phase_path = a['phase']
             image1.set_path(phase_path)
+            image1.RGB2Gray()
+            image1.image_fft()
             image1.image_dimensions = {
                 'total_width': 0,
                 'total_height': 0,
@@ -56,6 +60,8 @@ def upload():
         if 'mag' in a.keys():
             mag_path = a['mag']
             image2.set_path(mag_path)
+            image2.RGB2Gray()
+            image2.image_fft()
             image2.image_dimensions = {
                 'total_width': 0,
                 'total_height': 0,
@@ -82,7 +88,9 @@ def crop():
             image1.image_dimensions['crop_height'] = a['phase']['cropped_height']
             image1.image_dimensions['x'] = a['phase']['x']
             image1.image_dimensions['y'] = a['phase']['y']
-            image1.calc_dim()
+            image1.dim, image1.x_start, image1.x_end , image1.y_start , image1.y_end= imageMixer.calc_dim(image1)
+            image1.cropped_phase , image1.cropped_mag =imageMixer.crop(image1 , 1)
+            # image1.crop(1)
         else:
             image2.image_dimensions['total_width'] = a['mag']['img_width']
             image2.image_dimensions['total_height'] = a['mag']['img_height']
@@ -90,24 +98,18 @@ def crop():
             image2.image_dimensions['crop_height'] = a['mag']['cropped_height']
             image2.image_dimensions['x'] = a['mag']['x']
             image2.image_dimensions['y'] = a['mag']['y']
-            image2.calc_dim()
+            image2.dim, image2.x_start, image2.x_end , image2.y_start , image2.y_end= imageMixer.calc_dim(image2)
+            image2.cropped_phase , image2.cropped_mag =imageMixer.crop(image2 , 1)
         print(np.exp(1j * np.angle(0)))
         out_path = 'src/cat.jpeg'
-        phase_path1='src/phase1.jpeg'
-        mag_path1='src/mag1.jpeg'
-        phase_path2='src/phase2.jpeg'
-        mag_path2='src/mag2.jpeg'        
-        image1.mix_with_uniform_mag(mag_path1)
-        image1.mix_with_uniform_phase(phase_path1)
-        image2.mix_with_uniform_mag(mag_path2)
-        image2.mix_with_uniform_phase(phase_path2)
         if image2.path == None or image2.image_dimensions['crop_width'] == 0 or image2.image_dimensions['crop_height'] == 0:
             print(image1.image_dimensions, image2.image_dimensions)
-            image1.mix_with_uniform_mag(out_path)
+            imageMixer.mix_with_uniform_mag(out_path=out_path)
+            # image1.mix_with_uniform_mag(out_path)
         elif image1.path == None or image1.image_dimensions['crop_width'] == 0 or image1.image_dimensions['crop_height'] == 0:
-            image2.mix_with_uniform_phase(out_path)
+            imageMixer.mix_with_uniform_phase(out_path)
         else:
-            image1.mag_phase_mix(image2.cropped_mag, out_path)
+            imageMixer.mag_phase_mix(out_path)
         return request.data
 
 

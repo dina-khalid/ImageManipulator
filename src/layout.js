@@ -129,7 +129,7 @@ export default function HeaderFooter() {
               fixed Crop
             </Button>
           </ThemeProvider>
-          <Button
+          {/* <Button
             style={styles.icon}
             startIcon={<CropOutlinedIcon />}
             onClick={() => {
@@ -137,7 +137,7 @@ export default function HeaderFooter() {
             }}
           >
             Swap inputs
-          </Button>
+          </Button> */}
         </View>
       </View>
 
