@@ -2,15 +2,12 @@
 
 - Load Image (from Unsplash or from PC)
 - Save Image
-- Undo/Redo
 - Crop
 - Flip
-- Free Rotation
-- Zoom
+- Mix Phase & MAgnitude Of Two Different Images
 
 ## Stack
 
 - React js
 - TypeScript
-- MobX
-- Fabricjs
+- Flask
